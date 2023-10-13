@@ -1,11 +1,11 @@
 {
-  "publisher":"jiangjunfeng",
+  "publisher": "jiangjunfeng",
   "name": "jiangvscodeplugin",
   "displayName": "jiangVsCodePlugin",
   "description": "jiang study ",
-  "version": "0.0.1",
+  "version": "1.0.1",
   "engines": {
-    "vscode": "^1.83.0" 
+    "vscode": "^1.83.0"
   },
   "categories": [
     "Other"
@@ -20,7 +20,7 @@
       }
     ]
   },
-  "repository":"https://github.com/upJiang/jiang-vscode-plugin",
+  "repository": "https://github.com/upJiang/jiang-vscode-plugin",
   "scripts": {
     "vscode:prepublish": "yarn run package",
     "compile": "webpack",
@@ -47,8 +47,8 @@
     "webpack-cli": "^5.1.4",
     "@vscode/test-electron": "^2.3.4"
   },
-  "galleryBanner":{
-    "color":"#1890ff"
+  "galleryBanner": {
+    "color": "#1890ff"
   },
   "viewsContainers": {
     "activitybar": [
