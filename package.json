@@ -17,6 +17,11 @@
       {
         "command": "jiangvscodeplugin.helloWorld",
         "title": "Hello World"
+      },
+      {
+        "command": "catCoding.start",
+        "title": "Start new cat coding session",
+        "category": "Cat Coding"
       }
     ]
   },
@@ -29,10 +34,8 @@
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",
-    "lint": "eslint src --ext ts",
     "test": "node ./out/test/runTest.js",
-    "tsc": "vue-tsc --noEmit --skipLibCheck",
-    "prepare": "husky install"
+    "tsc": "vue-tsc --noEmit --skipLibCheck"
   },
   "devDependencies": {
     "@commitlint/cli": "^17.7.2",
