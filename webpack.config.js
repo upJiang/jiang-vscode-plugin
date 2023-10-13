@@ -9,24 +9,23 @@ const path = require('path');
 
 /** @type WebpackConfig */
 const extensionConfig = {
-  target: 'node', // VS Code extensions run in a Node.js-context 📖 -> https://webpack.js.org/configuration/node/
-	mode: 'none', // this leaves the source code as close as possible to the original (when packaging we set this to 'production')
+  target: 'node', // 'node'，因为我们的插件运行在 Node.js 环境中。
+	mode: 'none',
 
-  entry: './src/extension.ts', // the entry point of this extension, 📖 -> https://webpack.js.org/configuration/entry-context/
+  entry: './src/extension.ts', // webpack 使用的入口文件
   output: {
-    // the bundle is stored in the 'dist' folder (check package.json), 📖 -> https://webpack.js.org/configuration/output/
+    // 告诉 webpack 应该把打包好的文件放在哪里，一般而言我们会放在dist文件夹里
     path: path.resolve(__dirname, 'dist'),
     filename: 'extension.js',
     libraryTarget: 'commonjs2'
   },
   externals: {
-    vscode: 'commonjs vscode' // the vscode-module is created on-the-fly and must be excluded. Add other modules that cannot be webpack'ed, 📖 -> https://webpack.js.org/configuration/externals/
-    // modules added here also need to be added in the .vscodeignore file
+    vscode: 'commonjs vscode' // 排除配置，在这里可以配置打包文件不应包含的文件和模块
   },
   resolve: {
-    // support reading TypeScript and JavaScript files, 📖 -> https://github.com/TypeStrong/ts-loader
     extensions: ['.ts', '.js']
   },
+  // 配置 Typescript 和 Javascript 的解析器
   module: {
     rules: [
       {

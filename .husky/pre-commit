@@ -1,0 +1,15 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+# EMAIL=$(git config user.email)
+# if [[ ! $EMAIL =~ @vanke\.com$ ]]; then
+#     echo "Your git information is not valid"
+#     echo "Please run:"
+#     echo '   git config --local user.name "<Your name in vanke>"'
+#     echo '   git config --local user.email "<Your alias>@vanke.com"'
+#     exit 1
+# fi
+
+# lint
+# yarn lint
+echo "---检查开始---"
