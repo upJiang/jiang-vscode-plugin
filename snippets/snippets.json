@@ -1,0 +1,12 @@
+{
+  "HTML Comment": {
+    "prefix": "html-comment",
+    "body": ["<!-- ${1:Comment} -->"],
+    "description": "HTML Comment"
+  },
+  "JavaScript Console Log": {
+    "prefix": "js-log",
+    "body": ["console.log(${1:Message});"],
+    "description": "JavaScript Console Log"
+  }
+}

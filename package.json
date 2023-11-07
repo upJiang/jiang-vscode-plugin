@@ -1,9 +1,10 @@
 {
-  "publisher": "jiangjunfeng",
-  "name": "jiangvscodeplugin",
-  "displayName": "jiangVsCodePlugin",
-  "description": "jiang study ",
+  "publisher": "junfengjiang",
+  "name": "codetoolbox",
+  "displayName": "CodeToolBox",
+  "description": "CodeToolBox，开发小工具",
   "version": "1.0.1",
+  "icon": "images/title.jpg",
   "engines": {
     "vscode": "^1.83.0"
   },
@@ -15,18 +16,55 @@
   "contributes": {
     "commands": [
       {
-        "command": "jiangvscodeplugin.helloWorld",
-        "title": "Hello World"
+        "command": "CodeToolBox.webview",
+        "title": "打开webview"
       },
       {
-        "command": "catCoding.start",
-        "title": "Start new cat coding session",
-        "category": "Cat Coding"
+        "command": "CodeToolBox.createScript",
+        "title": "创建区块"
+      },
+      {
+        "command": "CodeToolBox.createSnippets",
+        "title": "创建代码片段"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "submenu": "CodeToolBox/explorer/context",
+          "when": "explorerResourceIsFolder"
+        }
+      ],
+      "CodeToolBox/explorer/context": [
+        {
+          "command": "CodeToolBox.createScript"
+        }
+      ],
+      "editor/context": [
+        {
+          "when": "editorHasSelection",
+          "command": "CodeToolBox.createSnippets",
+          "group": "5_insert"
+        }
+      ]
+    },
+    "submenus": [
+      {
+        "id": "CodeToolBox/explorer/context",
+        "label": "CodeToolBox",
+        "icon": "$(octoface)"
+      }
+    ],
+    "snippets": [
+      {
+        "language": "javascript",
+        "path": "./snippets/snippets.json"
       }
     ]
   },
   "repository": "https://github.com/upJiang/jiang-vscode-plugin",
   "scripts": {
+    "dev": "yarn --cwd \"webview\" dev",
     "vscode:prepublish": "yarn run package",
     "compile": "webpack",
     "watch": "webpack --watch",
@@ -62,13 +100,8 @@
   "galleryBanner": {
     "color": "#1890ff"
   },
-  "viewsContainers": {
-    "activitybar": [
-      {
-        "id": "jiang",
-        "title": "jiang",
-        "icon": "images/title.jpg"
-      }
-    ]
+  "dependencies": {
+    "fs-extra": "^11.1.1",
+    "vscode-webview-tool": "^1.0.4"
   }
 }
