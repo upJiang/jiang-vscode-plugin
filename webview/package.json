@@ -5,11 +5,11 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "prepare": "husky install",
     "tsc": "vue-tsc --noEmit --skipLibCheck",
     "lint": "lint-staged"
   },
   "dependencies": {
+    "ant-design-vue": "4",
     "axios": "^0.21.1",
     "vue": "^3.1.4",
     "vue-router": "^4.0.10",
@@ -30,7 +30,6 @@
     "eslint": "^8.6.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.2.0",
-    "husky": "^7.0.2",
     "less": "^4.1.1",
     "lint-staged": "^12.1.5",
     "prettier": "^2.5.1",

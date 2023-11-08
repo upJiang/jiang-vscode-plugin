@@ -3,7 +3,7 @@
   "name": "codetoolbox",
   "displayName": "CodeToolBox",
   "description": "CodeToolBox，开发小工具",
-  "version": "1.0.1",
+  "version": "1.0.4",
   "icon": "images/title.jpg",
   "engines": {
     "vscode": "^1.83.0"
@@ -65,10 +65,9 @@
   "repository": "https://github.com/upJiang/jiang-vscode-plugin",
   "scripts": {
     "dev": "yarn --cwd \"webview\" dev",
-    "vscode:prepublish": "yarn run package",
-    "compile": "webpack",
+    "build": "yarn --cwd \"webview\" build",
+    "vscode:prepublish": "webpack --mode production && yarn --cwd \"webview\" build",
     "watch": "webpack --watch",
-    "package": "webpack --mode production --devtool hidden-source-map",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
     "pretest": "yarn run compile-tests && yarn run compile && yarn run lint",

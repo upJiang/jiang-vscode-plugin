@@ -4,6 +4,7 @@ import vueJsx from '@vitejs/plugin-vue-jsx'
 import path from 'path'
 
 export default defineConfig({
+  base: './',
   plugins: [vue(), vueJsx()],
   // 配置别名
   resolve: {
@@ -13,5 +14,13 @@ export default defineConfig({
   },
   server: {
     port: 7979,
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        entryFileNames: 'main.js',
+      },
+    },
+    outDir: '../webview-dist',
   },
 })

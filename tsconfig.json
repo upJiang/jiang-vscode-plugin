@@ -5,7 +5,8 @@
     "lib": ["ES2020"],
     "sourceMap": true,
     "rootDir": "src",
-    "strict": true
+    "strict": true,
+    "noImplicitAny": false // 允许使用 any 类型
   },
   "exclude": ["webview"]
 }

@@ -1,0 +1,1 @@
+import{r as n,d as o,c as r,t as c,u as a,o as u}from"../main.js";class l{constructor(s){this.model=s}}const m=()=>({name:n("vue-mvp")}),i=()=>{const e=m(),s=new l(e);return{model:e,service:s}},p={style:{"font-size":"28px",color:"blue"}},v=o({__name:"index",setup(e){const s=i(),{model:t}=s;return(d,_)=>(u(),r("div",p,c(a(t).name.value)+"\u4E3B\u9875",1))}});export{v as default};
