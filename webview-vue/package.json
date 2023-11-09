@@ -6,7 +6,8 @@
     "dev": "vite",
     "build": "vite build",
     "tsc": "vue-tsc --noEmit --skipLibCheck",
-    "lint": "lint-staged"
+    "lint": "lint-staged",
+    "clear": "vite clear"
   },
   "dependencies": {
     "ant-design-vue": "4",

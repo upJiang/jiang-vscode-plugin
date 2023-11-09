@@ -2917,6 +2917,7 @@ exports.registerRunWebView = registerRunWebView;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getHtmlForWebview = exports.showWebView = void 0;
 const vscode = __webpack_require__(2);
+const snippet = __webpack_require__(45);
 const path = __webpack_require__(3);
 // 当前的webview列表
 let webviewPanelList = [];
@@ -2924,7 +2925,6 @@ let webviewPanelList = [];
 const showWebView = (context, options) => {
     // 先判断，webview是否存在了，存在了则不新增，传递消息给webview处理后续
     const webview = webviewPanelList.find((s) => s.key === options.key);
-    console.log("webview", webview);
     if (webview) {
         webview.panel.reveal(); // 显示webview
         // 传递任务
@@ -2946,12 +2946,15 @@ const showWebView = (context, options) => {
         // 设置icon
         panel.iconPath = vscode.Uri.file(path.join(context.extensionPath, "images", "title.jpg"));
         panel.webview.html = (0, exports.getHtmlForWebview)(context, panel);
-        // 创建资源管理列表
-        const disposables = [];
         // 创建监听器，监听 webview 返回信息，
         // 在webview中会通过 vscode.postMessage{command: 'someCommand',data: { /* 你的数据 */ },} 发送信息
+        // 创建资源管理列表
+        const disposables = [];
         panel.webview.onDidReceiveMessage(async (message) => {
-            console.log("回调message", message);
+            if (taskMap[message.cmd]) {
+                // 将回调消息传递到分发任务中
+                taskMap[message.cmd](context, message);
+            }
         }, null, disposables);
         // 关闭时销毁
         panel.onDidDispose(() => {
@@ -2971,14 +2974,15 @@ const showWebView = (context, options) => {
             panel,
             disposables,
         });
-        // 处理任务
+        // 处理任务,延迟一点执行，避免项目还没跑起来，就已经发送完message，导致监听不到
         if (options.task) {
-            console.log("options.task", options.task);
-            panel.webview.postMessage({
-                cmd: "vscodePushTask",
-                task: options.task.task,
-                data: options.task.data,
-            });
+            setTimeout(() => {
+                panel.webview.postMessage({
+                    cmd: "vscodePushTask",
+                    task: options?.task?.task,
+                    data: options?.task?.data,
+                });
+            }, 200);
         }
     }
 };
@@ -3006,13 +3010,19 @@ const getWebviewContent = (srcUri) => {
       <meta http-equiv="X-UA-Compatible" content="IE=edge">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <title>webview-react</title>
-      
+      <script>
+         window.vscode = acquireVsCodeApi();
+      </script>
     </head>
     <body>
       <div id="app"></div>
       <script  type="module" src="${srcUri}"></script>
     </body>
     </html>`;
+};
+// 人物列表，在此处分发任务
+const taskMap = {
+    addSnippets: snippet.addSnippets,
 };
 
 
@@ -3023,19 +3033,57 @@ const getWebviewContent = (srcUri) => {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.registerCreateSnippets = void 0;
+exports.addSnippets = void 0;
 const vscode = __webpack_require__(2);
+const addSnippets = (context, message) => {
+    const snippetFile = vscode.Uri.joinPath(context.extensionUri, ".vscode", "test.code-snippets");
+    console.log("message", message);
+    console.log("snippetFile", snippetFile);
+    // 创建代码片段
+    const testSnippet = {
+        [message.data.tips]: {
+            prefix: message.data?.prefix,
+            body: [message.data?.body],
+            description: message.data?.description,
+        },
+    };
+    // 将代码片段写入文件并添加到扩展程序
+    const writeSnippetFile = async () => {
+        try {
+            const data = JSON.stringify(testSnippet, null, "\t");
+            await vscode.workspace.fs.writeFile(snippetFile, Buffer.from(data));
+            vscode.window.showInformationMessage("Snippet added successfully!");
+        }
+        catch (error) {
+            vscode.window.showErrorMessage(`Error adding snippet: ${error}`);
+        }
+    };
+    writeSnippetFile();
+    console.log("此处执行");
+};
+exports.addSnippets = addSnippets;
+
+
+/***/ }),
+/* 46 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.registerCreateSnippets = void 0;
 const vscode_1 = __webpack_require__(2);
+const webviewUtils_1 = __webpack_require__(44);
 const registerCreateSnippets = (context) => {
     context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.createSnippets", async () => {
-        const editor = vscode.window.activeTextEditor;
-        if (editor) {
-            const snippetName = "JavaScript Console Log"; // 替换为您的代码片段名称
-            if (editor.selection.isEmpty) {
-                const snippet = new vscode.SnippetString(snippetName);
-                editor.insertSnippet(snippet);
-            }
-        }
+        (0, webviewUtils_1.showWebView)(context, {
+            key: "main",
+            title: "添加代码片段",
+            viewColumn: 1,
+            task: {
+                task: "addSnippets",
+            },
+        });
     }));
 };
 exports.registerCreateSnippets = registerCreateSnippets;
@@ -3079,7 +3127,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deactivate = exports.activate = void 0;
 const createScript_1 = __webpack_require__(1);
 const runWenview_1 = __webpack_require__(43);
-const createSnippets_1 = __webpack_require__(45);
+const createSnippets_1 = __webpack_require__(46);
 function activate(context) {
     (0, createScript_1.registerCreateScript)(context);
     (0, runWenview_1.registerRunWebView)(context);

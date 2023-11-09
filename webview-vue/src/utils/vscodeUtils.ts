@@ -1,24 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { notification } from 'ant-design-vue'
+
 import router from '@/router'
 
 const callbacks: { [propName: string]: (data: any) => void } = {}
 const errorCallbacks: { [propName: string]: (data: any) => void } = {}
-if (process.env.NODE_ENV !== 'production') {
-  ;(window as any).vscode = (window as any).vscode
-    ? vscode
-    : {
-        postMessage: (message: { cmd: string; data: any; cbid: string }) => {
-          setTimeout(() => {
-            notification.success({
-              message: 'call vscode',
-              description: `cmd: ${message.cmd}`,
-            })
-            ;(callbacks[message.cbid] || function () {})(require(`./mock/${message.cmd}`).default)
-          }, 1000)
-        },
-      }
-}
+
 export function callVscode(
   data: { cmd: string; data?: any; skipError?: boolean },
   cb?: (data: any) => void,
@@ -83,17 +69,18 @@ export const initMessageListener = () => {
         delete errorCallbacks[message.cbid]
         break
       // vscode 主动推送task
-      case 'vscodePushTask': {
+      case 'vscodePushTask' || 'addSnippets':
         if (taskHandler[message.task]) {
           taskHandler[message.task](message.data)
         } else {
           message.error(`未找到名为 ${message.task} 回调方法!`)
         }
-      }
+        break
     }
   })
 }
 
+// 分发任务
 export const taskHandler: {
   [propName: string]: (data: any) => void
 } = {
@@ -102,8 +89,6 @@ export const taskHandler: {
     router.push(`/add-snippets`)
   },
   route: (data: { path: string }) => {
-    console.log('跳转', data)
-
     router.push(data.path)
   },
 }

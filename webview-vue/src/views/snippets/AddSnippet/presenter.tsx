@@ -9,8 +9,13 @@ export const usePresenter = () => {
   // 添加代码片段
   const handleAddSnippets = () => {
     callVscode({
-      cmd: 'addSnippet',
-      data: '111',
+      cmd: 'addSnippets',
+      data: {
+        tips: '测试jiang代码片段',
+        prefix: 'jiang',
+        body: '<div>1111</div>',
+        description: '江的测试代码片段',
+      },
     })
   }
 

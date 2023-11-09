@@ -64,9 +64,9 @@
   },
   "repository": "https://github.com/upJiang/jiang-vscode-plugin",
   "scripts": {
-    "dev": "yarn --cwd \"webview\" dev",
-    "build": "yarn --cwd \"webview\" build",
-    "vscode:prepublish": "webpack --mode production && yarn --cwd \"webview\" build",
+    "dev": "yarn --cwd \"webview-vue\" dev",
+    "build": "yarn --cwd \"webview-vue\" build",
+    "vscode:prepublish": "webpack --mode production && yarn --cwd \"webview-vue\" build",
     "watch": "webpack --watch",
     "compile-tests": "tsc -p . --outDir out",
     "watch-tests": "tsc -p . -w --outDir out",
