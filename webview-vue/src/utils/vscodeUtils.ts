@@ -25,51 +25,12 @@ export function callVscode(
   }
 }
 
-export function callVscodePromise(cmd: string, data: any, skipError?: boolean) {
-  return new Promise((resolve, reject) => {
-    callVscode(
-      { cmd, data, skipError },
-      res => {
-        resolve(res)
-      },
-      error => {
-        reject(error)
-      }
-    )
-  })
-}
-
-export function request<T = unknown>(params: { cmd: string; data?: any; skipError?: boolean }) {
-  return new Promise<T>((resolve, reject) => {
-    callVscode(
-      { cmd: params.cmd, data: params.data, skipError: params.skipError },
-      res => {
-        resolve(res)
-      },
-      error => {
-        reject(error)
-      }
-    )
-  })
-}
-
+// 初始化
 export const initMessageListener = () => {
   window.addEventListener('message', event => {
-    console.log('监听中')
     const message = event.data
     switch (message.cmd) {
-      // 来自vscode的回调
-      case 'vscodeCallback':
-        if (message.code === 200) {
-          ;(callbacks[message.cbid] || function () {})(message.data)
-        } else {
-          ;(errorCallbacks[message.cbid] || function () {})(message.data)
-        }
-        delete callbacks[message.cbid]
-        delete errorCallbacks[message.cbid]
-        break
-      // vscode 主动推送task
-      case 'vscodePushTask' || 'addSnippets':
+      case 'vscodePushTask':
         if (taskHandler[message.task]) {
           taskHandler[message.task](message.data)
         } else {
@@ -84,10 +45,7 @@ export const initMessageListener = () => {
 export const taskHandler: {
   [propName: string]: (data: any) => void
 } = {
-  addSnippets: (data?: { content?: string }) => {
-    // localStorage.setItem('addSnippets', data?.content || '')
-    router.push(`/add-snippets`)
-  },
+  // 跳转路由
   route: (data: { path: string }) => {
     router.push(data.path)
   },

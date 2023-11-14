@@ -68,6 +68,17 @@ export const showWebView = (
         data: any;
         skipError?: boolean;
       }) => {
+        // 监听webview反馈回来加载完成，初始化主动推送消息
+        if (message.cmd === "webviewLoaded") {
+          if (options.task) {
+            panel.webview.postMessage({
+              cmd: "vscodePushTask",
+              task: options?.task?.task,
+              data: options?.task?.data,
+            });
+          }
+        }
+        // 分发别的任务
         if (taskMap[message.cmd]) {
           // 将回调消息传递到分发任务中
           taskMap[message.cmd](context, message);
@@ -100,16 +111,6 @@ export const showWebView = (
       panel,
       disposables,
     });
-    // 处理任务,延迟一点执行，避免项目还没跑起来，就已经发送完message，导致监听不到
-    if (options.task) {
-      setTimeout(() => {
-        panel.webview.postMessage({
-          cmd: "vscodePushTask",
-          task: options?.task?.task,
-          data: options?.task?.data,
-        });
-      }, 200);
-    }
   }
 };
 

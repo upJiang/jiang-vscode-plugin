@@ -1,27 +1,26 @@
 import Service from './service'
 import { useModel } from './model'
-import { callVscode } from '@/utils/vscodeUtils'
+import { Form, message } from 'ant-design-vue'
 
+const { useForm } = Form
 export const usePresenter = () => {
   const model = useModel()
   const service = new Service(model)
 
-  // 添加代码片段
-  const handleAddSnippets = () => {
-    callVscode({
-      cmd: 'addSnippets',
-      data: {
-        tips: '测试jiang代码片段',
-        prefix: 'jiang',
-        body: '<div>1111</div>',
-        description: '江的测试代码片段',
-      },
-    })
+  const { validate, validateInfos, resetFields } = useForm(model.formState, model.rules)
+
+  // 提交
+  const handleOnSubmit = async () => {
+    await validate()
+    await service.onSubmit()
+    message.success('添加成功')
+    resetFields()
   }
 
   return {
     model,
     service,
-    handleAddSnippets,
+    handleOnSubmit,
+    validateInfos,
   }
 }

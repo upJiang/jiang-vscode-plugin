@@ -8,3 +8,6 @@ const app = createApp(App)
 app.use(router)
 app.use(Antd)
 app.mount('#app')
+
+// 初始化完毕，通知vscode已经加载完了
+vscode.postMessage({ cmd: 'webviewLoaded' })

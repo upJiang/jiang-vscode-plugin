@@ -9,7 +9,7 @@ initMessageListener()
 
 <style lang="less">
 #app {
-  color: #2c3e50;
-  text-align: center;
+  height: 100vh;
+  background: #fff;
 }
 </style>

@@ -42,15 +42,23 @@
       ],
       "editor/context": [
         {
-          "when": "editorHasSelection",
-          "command": "CodeToolBox.createSnippets",
-          "group": "5_insert"
+          "submenu": "CodeToolBox/editor/context"
+        }
+      ],
+      "CodeToolBox/editor/context": [
+        {
+          "command": "CodeToolBox.createSnippets"
         }
       ]
     },
     "submenus": [
       {
         "id": "CodeToolBox/explorer/context",
+        "label": "CodeToolBox",
+        "icon": "$(octoface)"
+      },
+      {
+        "id": "CodeToolBox/editor/context",
         "label": "CodeToolBox",
         "icon": "$(octoface)"
       }

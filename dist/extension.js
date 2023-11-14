@@ -2951,6 +2951,17 @@ const showWebView = (context, options) => {
         // 创建资源管理列表
         const disposables = [];
         panel.webview.onDidReceiveMessage(async (message) => {
+            // 监听webview反馈回来加载完成，初始化主动推送消息
+            if (message.cmd === "webviewLoaded") {
+                if (options.task) {
+                    panel.webview.postMessage({
+                        cmd: "vscodePushTask",
+                        task: options?.task?.task,
+                        data: options?.task?.data,
+                    });
+                }
+            }
+            // 分发别的任务
             if (taskMap[message.cmd]) {
                 // 将回调消息传递到分发任务中
                 taskMap[message.cmd](context, message);
@@ -2974,16 +2985,6 @@ const showWebView = (context, options) => {
             panel,
             disposables,
         });
-        // 处理任务,延迟一点执行，避免项目还没跑起来，就已经发送完message，导致监听不到
-        if (options.task) {
-            setTimeout(() => {
-                panel.webview.postMessage({
-                    cmd: "vscodePushTask",
-                    task: options?.task?.task,
-                    data: options?.task?.data,
-                });
-            }, 200);
-        }
     }
 };
 exports.showWebView = showWebView;
@@ -3036,11 +3037,10 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.addSnippets = void 0;
 const vscode = __webpack_require__(2);
 const addSnippets = (context, message) => {
-    const snippetFile = vscode.Uri.joinPath(context.extensionUri, ".vscode", "test.code-snippets");
-    console.log("message", message);
-    console.log("snippetFile", snippetFile);
+    // 指定文件路径
+    const snippetFilePath = vscode.Uri.joinPath(context.extensionUri, ".vscode", "test.code-snippets");
     // 创建代码片段
-    const testSnippet = {
+    const newSnippet = {
         [message.data.tips]: {
             prefix: message.data?.prefix,
             body: [message.data?.body],
@@ -3048,18 +3048,26 @@ const addSnippets = (context, message) => {
         },
     };
     // 将代码片段写入文件并添加到扩展程序
-    const writeSnippetFile = async () => {
+    const writesnippetFilePath = async () => {
         try {
-            const data = JSON.stringify(testSnippet, null, "\t");
-            await vscode.workspace.fs.writeFile(snippetFile, Buffer.from(data));
-            vscode.window.showInformationMessage("Snippet added successfully!");
+            let existingSnippets = {};
+            // 读取原有文件内容
+            const snippetsFileContent = await vscode.workspace.fs.readFile(snippetFilePath);
+            existingSnippets = JSON.parse(snippetsFileContent.toString());
+            // 如果不存在重复代码片段则拼接
+            if (!existingSnippets[newSnippet[message.data.tips].prefix]) {
+                existingSnippets = { ...existingSnippets, ...newSnippet };
+            }
+            const updatedSnippetsContent = JSON.stringify(existingSnippets, null, 2);
+            // 写入
+            await vscode.workspace.fs.writeFile(snippetFilePath, Buffer.from(updatedSnippetsContent, "utf-8"));
+            vscode.window.showInformationMessage("代码片段添加成功!");
         }
         catch (error) {
-            vscode.window.showErrorMessage(`Error adding snippet: ${error}`);
+            vscode.window.showErrorMessage(`代码片段添加失败: ${error}`);
         }
     };
-    writeSnippetFile();
-    console.log("此处执行");
+    writesnippetFilePath();
 };
 exports.addSnippets = addSnippets;
 
@@ -3081,7 +3089,10 @@ const registerCreateSnippets = (context) => {
             title: "添加代码片段",
             viewColumn: 1,
             task: {
-                task: "addSnippets",
+                task: "route",
+                data: {
+                    path: "/add-snippets",
+                },
             },
         });
     }));

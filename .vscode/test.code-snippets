@@ -1,9 +1,16 @@
 {
-	"测试jiang代码片段": {
-		"prefix": "jiang",
-		"body": [
-			"<div>1111</div>"
-		],
-		"description": "江的测试代码片段"
-	}
+  "2": {
+    "prefix": "hhh",
+    "body": [
+      "hhhhhhhhh"
+    ],
+    "description": "2"
+  },
+  "tt": {
+    "prefix": "tt",
+    "body": [
+      "tttttttt"
+    ],
+    "description": "tt"
+  }
 }

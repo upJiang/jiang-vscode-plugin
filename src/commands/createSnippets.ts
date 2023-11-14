@@ -9,7 +9,10 @@ export const registerCreateSnippets = (context: ExtensionContext) => {
         title: "添加代码片段",
         viewColumn: 1,
         task: {
-          task: "addSnippets",
+          task: "route",
+          data: {
+            path: "/add-snippets",
+          },
         },
       });
     }),
