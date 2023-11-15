@@ -8,5 +8,5 @@
     "strict": true,
     "noImplicitAny": false // 允许使用 any 类型
   },
-  "exclude": ["webview"]
+  "exclude": ["webview-vue"]
 }
