@@ -1,7 +1,9 @@
+import home from "@/views/home/index.vue";
+
 export default [
   {
     path: '/',
     name: '主页',
-    component: () => import('@/views/home/index.vue'),
+    component: home,
   },
 ]

@@ -122,15 +122,14 @@ export const getHtmlForWebview = (
   const isProduction =
     context.extensionMode === vscode.ExtensionMode.Production;
   let srcUrl: string | vscode.Uri = "";
-  if (!isProduction) {
+  if (isProduction) {
     const mainScriptPathOnDisk = vscode.Uri.file(
-      path.join(context.extensionPath, "webview-dist", "main.js"),
+      path.join(context.extensionPath, "webview-dist", "main.es.js"),
     );
     srcUrl = panel.webview.asWebviewUri(mainScriptPathOnDisk);
   } else {
     srcUrl = "http://127.0.0.1:7979/src/main.ts";
   }
-  console.log("srcUrl", srcUrl);
 
   return getWebviewContent(srcUrl);
 };
