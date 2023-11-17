@@ -12,10 +12,10 @@ export const addSnippets = (
     };
   },
 ) => {
-  // 指定文件路径
-  const snippetFilePath = vscode.Uri.file(
-    path.join(context.extensionPath, ".vscode", "test.code-snippets"),
-  );
+  // 获取当前项目下的路径
+  const rootPath = vscode.workspace.rootPath;
+  const extensionPath = path.join(rootPath!, ".vscode/test.code-snippets");
+  const snippetFilePath = vscode.Uri.file(extensionPath);
 
   // 创建代码片段
   const newSnippet = {
@@ -51,7 +51,6 @@ export const addSnippets = (
       // 读取原有文件内容
       const snippetsFileContent =
         await vscode.workspace.fs.readFile(snippetFilePath);
-
       if (snippetsFileContent && snippetsFileContent.toString())
         existingSnippets = JSON.parse(snippetsFileContent.toString());
 
@@ -61,8 +60,8 @@ export const addSnippets = (
       } else {
         existingSnippets = newSnippet;
       }
-
       const updatedSnippetsContent = JSON.stringify(existingSnippets, null, 2);
+
       // 写入
       await vscode.workspace.fs.writeFile(
         snippetFilePath,
