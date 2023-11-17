@@ -1,23 +1,9 @@
 {
   "2": {
-    "prefix": "hhh",
+    "prefix": "2",
     "body": [
-      "hhhhhhhhh"
+      "2"
     ],
     "description": "2"
-  },
-  "tt": {
-    "prefix": "tt",
-    "body": [
-      "tttttttt"
-    ],
-    "description": "tt"
-  },
-  "yy": {
-    "prefix": "yyy",
-    "body": [
-      "yyy"
-    ],
-    "description": "yyy"
   }
 }

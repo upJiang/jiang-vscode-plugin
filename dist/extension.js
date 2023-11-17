@@ -1,2 +1,3171 @@
-(()=>{var t={873:(t,e,n)=>{"use strict";const r=n(77),i=n(17),o=n(381).mkdirsSync,s=n(318).utimesMillisSync,c=n(733);function a(t,e,n,o){const s=(o.dereference?r.statSync:r.lstatSync)(e);if(s.isDirectory())return function(t,e,n,i,o){return e?l(n,i,o):function(t,e,n,i){return r.mkdirSync(n),l(e,n,i),f(n,t)}(t.mode,n,i,o)}(s,t,e,n,o);if(s.isFile()||s.isCharacterDevice()||s.isBlockDevice())return function(t,e,n,i,o){return e?function(t,e,n,i){if(i.overwrite)return r.unlinkSync(n),u(t,e,n,i);if(i.errorOnExist)throw new Error(`'${n}' already exists`)}(t,n,i,o):u(t,n,i,o)}(s,t,e,n,o);if(s.isSymbolicLink())return function(t,e,n,o){let s=r.readlinkSync(e);if(o.dereference&&(s=i.resolve(process.cwd(),s)),t){let t;try{t=r.readlinkSync(n)}catch(t){if("EINVAL"===t.code||"UNKNOWN"===t.code)return r.symlinkSync(s,n);throw t}if(o.dereference&&(t=i.resolve(process.cwd(),t)),c.isSrcSubdir(s,t))throw new Error(`Cannot copy '${s}' to a subdirectory of itself, '${t}'.`);if(c.isSrcSubdir(t,s))throw new Error(`Cannot overwrite '${t}' with '${s}'.`);return function(t,e){return r.unlinkSync(e),r.symlinkSync(t,e)}(s,n)}return r.symlinkSync(s,n)}(t,e,n,o);if(s.isSocket())throw new Error(`Cannot copy a socket file: ${e}`);if(s.isFIFO())throw new Error(`Cannot copy a FIFO pipe: ${e}`);throw new Error(`Unknown file: ${e}`)}function u(t,e,n,i){return r.copyFileSync(e,n),i.preserveTimestamps&&function(t,e,n){(function(t){return 0==(128&t)})(t)&&function(t,e){f(t,128|e)}(n,t),function(t,e){const n=r.statSync(t);s(e,n.atime,n.mtime)}(e,n)}(t.mode,e,n),f(n,t.mode)}function f(t,e){return r.chmodSync(t,e)}function l(t,e,n){r.readdirSync(t).forEach((r=>function(t,e,n,r){const o=i.join(e,t),s=i.join(n,t);if(r.filter&&!r.filter(o,s))return;const{destStat:u}=c.checkPathsSync(o,s,"copy",r);return a(u,o,s,r)}(r,t,e,n)))}t.exports=function(t,e,n){"function"==typeof n&&(n={filter:n}),(n=n||{}).clobber=!("clobber"in n)||!!n.clobber,n.overwrite="overwrite"in n?!!n.overwrite:n.clobber,n.preserveTimestamps&&"ia32"===process.arch&&process.emitWarning("Using the preserveTimestamps option in 32-bit node is not recommended;\n\n\tsee https://github.com/jprichardson/node-fs-extra/issues/269","Warning","fs-extra-WARN0002");const{srcStat:s,destStat:u}=c.checkPathsSync(t,e,"copy",n);if(c.checkParentPathsSync(t,s,e,"copy"),n.filter&&!n.filter(t,e))return;const f=i.dirname(e);return r.existsSync(f)||o(f),a(u,t,e,n)}},189:(t,e,n)=>{"use strict";const r=n(77),i=n(17),o=n(381).mkdirs,s=n(257).pathExists,c=n(318).utimesMillis,a=n(733);function u(t,e,n,r){if(!n.filter)return r(null,!0);Promise.resolve(n.filter(t,e)).then((t=>r(null,t)),(t=>r(t)))}function f(t,e,n,o,s){(o.dereference?r.stat:r.lstat)(e,((c,u)=>c?s(c):u.isDirectory()?function(t,e,n,i,o,s){return e?y(n,i,o,s):function(t,e,n,i,o){r.mkdir(n,(r=>{if(r)return o(r);y(e,n,i,(e=>e?o(e):p(n,t,o)))}))}(t.mode,n,i,o,s)}(u,t,e,n,o,s):u.isFile()||u.isCharacterDevice()||u.isBlockDevice()?function(t,e,n,i,o,s){return e?function(t,e,n,i,o){if(!i.overwrite)return i.errorOnExist?o(new Error(`'${n}' already exists`)):o();r.unlink(n,(r=>r?o(r):l(t,e,n,i,o)))}(t,n,i,o,s):l(t,n,i,o,s)}(u,t,e,n,o,s):u.isSymbolicLink()?function(t,e,n,o,s){r.readlink(e,((e,c)=>e?s(e):(o.dereference&&(c=i.resolve(process.cwd(),c)),t?void r.readlink(n,((t,e)=>t?"EINVAL"===t.code||"UNKNOWN"===t.code?r.symlink(c,n,s):s(t):(o.dereference&&(e=i.resolve(process.cwd(),e)),a.isSrcSubdir(c,e)?s(new Error(`Cannot copy '${c}' to a subdirectory of itself, '${e}'.`)):a.isSrcSubdir(e,c)?s(new Error(`Cannot overwrite '${e}' with '${c}'.`)):function(t,e,n){r.unlink(e,(i=>i?n(i):r.symlink(t,e,n)))}(c,n,s)))):r.symlink(c,n,s))))}(t,e,n,o,s):u.isSocket()?s(new Error(`Cannot copy a socket file: ${e}`)):u.isFIFO()?s(new Error(`Cannot copy a FIFO pipe: ${e}`)):s(new Error(`Unknown file: ${e}`))))}function l(t,e,n,i,o){r.copyFile(e,n,(r=>r?o(r):i.preserveTimestamps?function(t,e,n,r){return function(t){return 0==(128&t)}(t)?function(t,e,n){return p(t,128|e,n)}(n,t,(i=>i?r(i):d(t,e,n,r))):d(t,e,n,r)}(t.mode,e,n,o):p(n,t.mode,o)))}function d(t,e,n,i){!function(t,e,n){r.stat(t,((t,r)=>t?n(t):c(e,r.atime,r.mtime,n)))}(e,n,(e=>e?i(e):p(n,t,i)))}function p(t,e,n){return r.chmod(t,e,n)}function y(t,e,n,i){r.readdir(t,((r,o)=>r?i(r):m(o,t,e,n,i)))}function m(t,e,n,r,o){const s=t.pop();return s?function(t,e,n,r,o,s){const c=i.join(n,e),l=i.join(r,e);u(c,l,o,((e,i)=>e?s(e):i?void a.checkPaths(c,l,"copy",o,((e,i)=>{if(e)return s(e);const{destStat:a}=i;f(a,c,l,o,(e=>e?s(e):m(t,n,r,o,s)))})):m(t,n,r,o,s)))}(t,s,e,n,r,o):o()}t.exports=function(t,e,n,r){"function"!=typeof n||r?"function"==typeof n&&(n={filter:n}):(r=n,n={}),r=r||function(){},(n=n||{}).clobber=!("clobber"in n)||!!n.clobber,n.overwrite="overwrite"in n?!!n.overwrite:n.clobber,n.preserveTimestamps&&"ia32"===process.arch&&process.emitWarning("Using the preserveTimestamps option in 32-bit node is not recommended;\n\n\tsee https://github.com/jprichardson/node-fs-extra/issues/269","Warning","fs-extra-WARN0001"),a.checkPaths(t,e,"copy",n,((c,l)=>{if(c)return r(c);const{srcStat:d,destStat:p}=l;a.checkParentPaths(t,d,e,"copy",(c=>{if(c)return r(c);u(t,e,n,((c,a)=>c?r(c):a?void function(t,e,n,r,c){const a=i.dirname(n);s(a,((i,s)=>i?c(i):s?f(t,e,n,r,c):void o(a,(i=>i?c(i):f(t,e,n,r,c)))))}(p,t,e,n,r):r()))}))}))}},464:(t,e,n)=>{"use strict";const r=n(981).fromCallback;t.exports={copy:r(n(189)),copySync:n(873)}},590:(t,e,n)=>{"use strict";const r=n(981).fromPromise,i=n(749),o=n(17),s=n(381),c=n(542),a=r((async function(t){let e;try{e=await i.readdir(t)}catch{return s.mkdirs(t)}return Promise.all(e.map((e=>c.remove(o.join(t,e)))))}));function u(t){let e;try{e=i.readdirSync(t)}catch{return s.mkdirsSync(t)}e.forEach((e=>{e=o.join(t,e),c.removeSync(e)}))}t.exports={emptyDirSync:u,emptydirSync:u,emptyDir:a,emptydir:a}},530:(t,e,n)=>{"use strict";const r=n(981).fromCallback,i=n(17),o=n(77),s=n(381);t.exports={createFile:r((function(t,e){function n(){o.writeFile(t,"",(t=>{if(t)return e(t);e()}))}o.stat(t,((r,c)=>{if(!r&&c.isFile())return e();const a=i.dirname(t);o.stat(a,((t,r)=>{if(t)return"ENOENT"===t.code?s.mkdirs(a,(t=>{if(t)return e(t);n()})):e(t);r.isDirectory()?n():o.readdir(a,(t=>{if(t)return e(t)}))}))}))})),createFileSync:function(t){let e;try{e=o.statSync(t)}catch{}if(e&&e.isFile())return;const n=i.dirname(t);try{o.statSync(n).isDirectory()||o.readdirSync(n)}catch(t){if(!t||"ENOENT"!==t.code)throw t;s.mkdirsSync(n)}o.writeFileSync(t,"")}}},720:(t,e,n)=>{"use strict";const{createFile:r,createFileSync:i}=n(530),{createLink:o,createLinkSync:s}=n(865),{createSymlink:c,createSymlinkSync:a}=n(635);t.exports={createFile:r,createFileSync:i,ensureFile:r,ensureFileSync:i,createLink:o,createLinkSync:s,ensureLink:o,ensureLinkSync:s,createSymlink:c,createSymlinkSync:a,ensureSymlink:c,ensureSymlinkSync:a}},865:(t,e,n)=>{"use strict";const r=n(981).fromCallback,i=n(17),o=n(77),s=n(381),c=n(257).pathExists,{areIdentical:a}=n(733);t.exports={createLink:r((function(t,e,n){function r(t,e){o.link(t,e,(t=>{if(t)return n(t);n(null)}))}o.lstat(e,((u,f)=>{o.lstat(t,((o,u)=>{if(o)return o.message=o.message.replace("lstat","ensureLink"),n(o);if(f&&a(u,f))return n(null);const l=i.dirname(e);c(l,((i,o)=>i?n(i):o?r(t,e):void s.mkdirs(l,(i=>{if(i)return n(i);r(t,e)}))))}))}))})),createLinkSync:function(t,e){let n;try{n=o.lstatSync(e)}catch{}try{const e=o.lstatSync(t);if(n&&a(e,n))return}catch(t){throw t.message=t.message.replace("lstat","ensureLink"),t}const r=i.dirname(e);return o.existsSync(r)||s.mkdirsSync(r),o.linkSync(t,e)}}},72:(t,e,n)=>{"use strict";const r=n(17),i=n(77),o=n(257).pathExists;t.exports={symlinkPaths:function(t,e,n){if(r.isAbsolute(t))return i.lstat(t,(e=>e?(e.message=e.message.replace("lstat","ensureSymlink"),n(e)):n(null,{toCwd:t,toDst:t})));{const s=r.dirname(e),c=r.join(s,t);return o(c,((e,o)=>e?n(e):o?n(null,{toCwd:c,toDst:t}):i.lstat(t,(e=>e?(e.message=e.message.replace("lstat","ensureSymlink"),n(e)):n(null,{toCwd:t,toDst:r.relative(s,t)})))))}},symlinkPathsSync:function(t,e){let n;if(r.isAbsolute(t)){if(n=i.existsSync(t),!n)throw new Error("absolute srcpath does not exist");return{toCwd:t,toDst:t}}{const o=r.dirname(e),s=r.join(o,t);if(n=i.existsSync(s),n)return{toCwd:s,toDst:t};if(n=i.existsSync(t),!n)throw new Error("relative srcpath does not exist");return{toCwd:t,toDst:r.relative(o,t)}}}}},259:(t,e,n)=>{"use strict";const r=n(77);t.exports={symlinkType:function(t,e,n){if(n="function"==typeof e?e:n,e="function"!=typeof e&&e)return n(null,e);r.lstat(t,((t,r)=>{if(t)return n(null,"file");e=r&&r.isDirectory()?"dir":"file",n(null,e)}))},symlinkTypeSync:function(t,e){let n;if(e)return e;try{n=r.lstatSync(t)}catch{return"file"}return n&&n.isDirectory()?"dir":"file"}}},635:(t,e,n)=>{"use strict";const r=n(981).fromCallback,i=n(17),o=n(749),s=n(381),c=s.mkdirs,a=s.mkdirsSync,u=n(72),f=u.symlinkPaths,l=u.symlinkPathsSync,d=n(259),p=d.symlinkType,y=d.symlinkTypeSync,m=n(257).pathExists,{areIdentical:h}=n(733);function w(t,e,n,r){f(t,e,((s,a)=>{if(s)return r(s);t=a.toDst,p(a.toCwd,n,((n,s)=>{if(n)return r(n);const a=i.dirname(e);m(a,((n,i)=>n?r(n):i?o.symlink(t,e,s,r):void c(a,(n=>{if(n)return r(n);o.symlink(t,e,s,r)}))))}))}))}t.exports={createSymlink:r((function(t,e,n,r){r="function"==typeof n?n:r,n="function"!=typeof n&&n,o.lstat(e,((i,s)=>{!i&&s.isSymbolicLink()?Promise.all([o.stat(t),o.stat(e)]).then((([i,o])=>{if(h(i,o))return r(null);w(t,e,n,r)})):w(t,e,n,r)}))})),createSymlinkSync:function(t,e,n){let r;try{r=o.lstatSync(e)}catch{}if(r&&r.isSymbolicLink()){const n=o.statSync(t),r=o.statSync(e);if(h(n,r))return}const s=l(t,e);t=s.toDst,n=y(s.toCwd,n);const c=i.dirname(e);return o.existsSync(c)||a(c),o.symlinkSync(t,e,n)}}},749:(t,e,n)=>{"use strict";const r=n(981).fromCallback,i=n(77),o=["access","appendFile","chmod","chown","close","copyFile","fchmod","fchown","fdatasync","fstat","fsync","ftruncate","futimes","lchmod","lchown","link","lstat","mkdir","mkdtemp","open","opendir","readdir","readFile","readlink","realpath","rename","rm","rmdir","stat","symlink","truncate","unlink","utimes","writeFile"].filter((t=>"function"==typeof i[t]));Object.assign(e,i),o.forEach((t=>{e[t]=r(i[t])})),e.exists=function(t,e){return"function"==typeof e?i.exists(t,e):new Promise((e=>i.exists(t,e)))},e.read=function(t,e,n,r,o,s){return"function"==typeof s?i.read(t,e,n,r,o,s):new Promise(((s,c)=>{i.read(t,e,n,r,o,((t,e,n)=>{if(t)return c(t);s({bytesRead:e,buffer:n})}))}))},e.write=function(t,e,...n){return"function"==typeof n[n.length-1]?i.write(t,e,...n):new Promise(((r,o)=>{i.write(t,e,...n,((t,e,n)=>{if(t)return o(t);r({bytesWritten:e,buffer:n})}))}))},e.readv=function(t,e,...n){return"function"==typeof n[n.length-1]?i.readv(t,e,...n):new Promise(((r,o)=>{i.readv(t,e,...n,((t,e,n)=>{if(t)return o(t);r({bytesRead:e,buffers:n})}))}))},e.writev=function(t,e,...n){return"function"==typeof n[n.length-1]?i.writev(t,e,...n):new Promise(((r,o)=>{i.writev(t,e,...n,((t,e,n)=>{if(t)return o(t);r({bytesWritten:e,buffers:n})}))}))},"function"==typeof i.realpath.native?e.realpath.native=r(i.realpath.native):process.emitWarning("fs.realpath.native is not a function. Is fs being monkey-patched?","Warning","fs-extra-WARN0003")},674:(t,e,n)=>{"use strict";t.exports={...n(749),...n(464),...n(590),...n(720),...n(573),...n(381),...n(338),...n(670),...n(257),...n(542)}},573:(t,e,n)=>{"use strict";const r=n(981).fromPromise,i=n(183);i.outputJson=r(n(508)),i.outputJsonSync=n(578),i.outputJSON=i.outputJson,i.outputJSONSync=i.outputJsonSync,i.writeJSON=i.writeJson,i.writeJSONSync=i.writeJsonSync,i.readJSON=i.readJson,i.readJSONSync=i.readJsonSync,t.exports=i},183:(t,e,n)=>{"use strict";const r=n(813);t.exports={readJson:r.readFile,readJsonSync:r.readFileSync,writeJson:r.writeFile,writeJsonSync:r.writeFileSync}},578:(t,e,n)=>{"use strict";const{stringify:r}=n(780),{outputFileSync:i}=n(670);t.exports=function(t,e,n){const o=r(e,n);i(t,o,n)}},508:(t,e,n)=>{"use strict";const{stringify:r}=n(780),{outputFile:i}=n(670);t.exports=async function(t,e,n={}){const o=r(e,n);await i(t,o,n)}},381:(t,e,n)=>{"use strict";const r=n(981).fromPromise,{makeDir:i,makeDirSync:o}=n(233),s=r(i);t.exports={mkdirs:s,mkdirsSync:o,mkdirp:s,mkdirpSync:o,ensureDir:s,ensureDirSync:o}},233:(t,e,n)=>{"use strict";const r=n(749),{checkPath:i}=n(468),o=t=>"number"==typeof t?t:{mode:511,...t}.mode;t.exports.makeDir=async(t,e)=>(i(t),r.mkdir(t,{mode:o(e),recursive:!0})),t.exports.makeDirSync=(t,e)=>(i(t),r.mkdirSync(t,{mode:o(e),recursive:!0}))},468:(t,e,n)=>{"use strict";const r=n(17);t.exports.checkPath=function(t){if("win32"===process.platform&&/[<>:"|?*]/.test(t.replace(r.parse(t).root,""))){const e=new Error(`Path contains invalid characters: ${t}`);throw e.code="EINVAL",e}}},338:(t,e,n)=>{"use strict";const r=n(981).fromCallback;t.exports={move:r(n(436)),moveSync:n(736)}},736:(t,e,n)=>{"use strict";const r=n(77),i=n(17),o=n(464).copySync,s=n(542).removeSync,c=n(381).mkdirpSync,a=n(733);function u(t,e,n){try{r.renameSync(t,e)}catch(r){if("EXDEV"!==r.code)throw r;return function(t,e,n){return o(t,e,{overwrite:n,errorOnExist:!0,preserveTimestamps:!0}),s(t)}(t,e,n)}}t.exports=function(t,e,n){const o=(n=n||{}).overwrite||n.clobber||!1,{srcStat:f,isChangingCase:l=!1}=a.checkPathsSync(t,e,"move",n);return a.checkParentPathsSync(t,f,e,"move"),function(t){const e=i.dirname(t);return i.parse(e).root===e}(e)||c(i.dirname(e)),function(t,e,n,i){if(i)return u(t,e,n);if(n)return s(e),u(t,e,n);if(r.existsSync(e))throw new Error("dest already exists.");return u(t,e,n)}(t,e,o,l)}},436:(t,e,n)=>{"use strict";const r=n(77),i=n(17),o=n(464).copy,s=n(542).remove,c=n(381).mkdirp,a=n(257).pathExists,u=n(733);function f(t,e,n,r,i){return r?l(t,e,n,i):n?s(e,(r=>r?i(r):l(t,e,n,i))):void a(e,((r,o)=>r?i(r):o?i(new Error("dest already exists.")):l(t,e,n,i)))}function l(t,e,n,i){r.rename(t,e,(r=>r?"EXDEV"!==r.code?i(r):function(t,e,n,r){o(t,e,{overwrite:n,errorOnExist:!0,preserveTimestamps:!0},(e=>e?r(e):s(t,r)))}(t,e,n,i):i()))}t.exports=function(t,e,n,r){"function"==typeof n&&(r=n,n={});const o=(n=n||{}).overwrite||n.clobber||!1;u.checkPaths(t,e,"move",n,((n,s)=>{if(n)return r(n);const{srcStat:a,isChangingCase:l=!1}=s;u.checkParentPaths(t,a,e,"move",(n=>n?r(n):function(t){const e=i.dirname(t);return i.parse(e).root===e}(e)?f(t,e,o,l,r):void c(i.dirname(e),(n=>n?r(n):f(t,e,o,l,r)))))}))}},670:(t,e,n)=>{"use strict";const r=n(981).fromCallback,i=n(77),o=n(17),s=n(381),c=n(257).pathExists;t.exports={outputFile:r((function(t,e,n,r){"function"==typeof n&&(r=n,n="utf8");const a=o.dirname(t);c(a,((o,c)=>o?r(o):c?i.writeFile(t,e,n,r):void s.mkdirs(a,(o=>{if(o)return r(o);i.writeFile(t,e,n,r)}))))})),outputFileSync:function(t,...e){const n=o.dirname(t);if(i.existsSync(n))return i.writeFileSync(t,...e);s.mkdirsSync(n),i.writeFileSync(t,...e)}}},257:(t,e,n)=>{"use strict";const r=n(981).fromPromise,i=n(749);t.exports={pathExists:r((function(t){return i.access(t).then((()=>!0)).catch((()=>!1))})),pathExistsSync:i.existsSync}},542:(t,e,n)=>{"use strict";const r=n(77),i=n(981).fromCallback;t.exports={remove:i((function(t,e){r.rm(t,{recursive:!0,force:!0},e)})),removeSync:function(t){r.rmSync(t,{recursive:!0,force:!0})}}},733:(t,e,n)=>{"use strict";const r=n(749),i=n(17),o=n(837);function s(t,e,n){const i=n.dereference?t=>r.stat(t,{bigint:!0}):t=>r.lstat(t,{bigint:!0});return Promise.all([i(t),i(e).catch((t=>{if("ENOENT"===t.code)return null;throw t}))]).then((([t,e])=>({srcStat:t,destStat:e})))}function c(t,e){return e.ino&&e.dev&&e.ino===t.ino&&e.dev===t.dev}function a(t,e){const n=i.resolve(t).split(i.sep).filter((t=>t)),r=i.resolve(e).split(i.sep).filter((t=>t));return n.reduce(((t,e,n)=>t&&r[n]===e),!0)}function u(t,e,n){return`Cannot ${n} '${t}' to a subdirectory of itself, '${e}'.`}t.exports={checkPaths:function(t,e,n,r,f){o.callbackify(s)(t,e,r,((r,o)=>{if(r)return f(r);const{srcStat:s,destStat:l}=o;if(l){if(c(s,l)){const r=i.basename(t),o=i.basename(e);return"move"===n&&r!==o&&r.toLowerCase()===o.toLowerCase()?f(null,{srcStat:s,destStat:l,isChangingCase:!0}):f(new Error("Source and destination must not be the same."))}if(s.isDirectory()&&!l.isDirectory())return f(new Error(`Cannot overwrite non-directory '${e}' with directory '${t}'.`));if(!s.isDirectory()&&l.isDirectory())return f(new Error(`Cannot overwrite directory '${e}' with non-directory '${t}'.`))}return s.isDirectory()&&a(t,e)?f(new Error(u(t,e,n))):f(null,{srcStat:s,destStat:l})}))},checkPathsSync:function(t,e,n,o){const{srcStat:s,destStat:f}=function(t,e,n){let i;const o=n.dereference?t=>r.statSync(t,{bigint:!0}):t=>r.lstatSync(t,{bigint:!0}),s=o(t);try{i=o(e)}catch(t){if("ENOENT"===t.code)return{srcStat:s,destStat:null};throw t}return{srcStat:s,destStat:i}}(t,e,o);if(f){if(c(s,f)){const r=i.basename(t),o=i.basename(e);if("move"===n&&r!==o&&r.toLowerCase()===o.toLowerCase())return{srcStat:s,destStat:f,isChangingCase:!0};throw new Error("Source and destination must not be the same.")}if(s.isDirectory()&&!f.isDirectory())throw new Error(`Cannot overwrite non-directory '${e}' with directory '${t}'.`);if(!s.isDirectory()&&f.isDirectory())throw new Error(`Cannot overwrite directory '${e}' with non-directory '${t}'.`)}if(s.isDirectory()&&a(t,e))throw new Error(u(t,e,n));return{srcStat:s,destStat:f}},checkParentPaths:function t(e,n,o,s,a){const f=i.resolve(i.dirname(e)),l=i.resolve(i.dirname(o));if(l===f||l===i.parse(l).root)return a();r.stat(l,{bigint:!0},((r,i)=>r?"ENOENT"===r.code?a():a(r):c(n,i)?a(new Error(u(e,o,s))):t(e,n,l,s,a)))},checkParentPathsSync:function t(e,n,o,s){const a=i.resolve(i.dirname(e)),f=i.resolve(i.dirname(o));if(f===a||f===i.parse(f).root)return;let l;try{l=r.statSync(f,{bigint:!0})}catch(t){if("ENOENT"===t.code)return;throw t}if(c(n,l))throw new Error(u(e,o,s));return t(e,n,f,s)},isSrcSubdir:a,areIdentical:c}},318:(t,e,n)=>{"use strict";const r=n(77);t.exports={utimesMillis:function(t,e,n,i){r.open(t,"r+",((t,o)=>{if(t)return i(t);r.futimes(o,e,n,(t=>{r.close(o,(e=>{i&&i(t||e)}))}))}))},utimesMillisSync:function(t,e,n){const i=r.openSync(t,"r+");return r.futimesSync(i,e,n),r.closeSync(i)}}},458:t=>{"use strict";t.exports=function(t){if(null===t||"object"!=typeof t)return t;if(t instanceof Object)var n={__proto__:e(t)};else n=Object.create(null);return Object.getOwnPropertyNames(t).forEach((function(e){Object.defineProperty(n,e,Object.getOwnPropertyDescriptor(t,e))})),n};var e=Object.getPrototypeOf||function(t){return t.__proto__}},77:(t,e,n)=>{var r,i,o=n(147),s=n(161),c=n(520),a=n(458),u=n(837);function f(t,e){Object.defineProperty(t,r,{get:function(){return e}})}"function"==typeof Symbol&&"function"==typeof Symbol.for?(r=Symbol.for("graceful-fs.queue"),i=Symbol.for("graceful-fs.previous")):(r="___graceful-fs.queue",i="___graceful-fs.previous");var l,d=function(){};if(u.debuglog?d=u.debuglog("gfs4"):/\bgfs4\b/i.test(process.env.NODE_DEBUG||"")&&(d=function(){var t=u.format.apply(u,arguments);t="GFS4: "+t.split(/\n/).join("\nGFS4: "),console.error(t)}),!o[r]){var p=global[r]||[];f(o,p),o.close=function(t){function e(e,n){return t.call(o,e,(function(t){t||h(),"function"==typeof n&&n.apply(this,arguments)}))}return Object.defineProperty(e,i,{value:t}),e}(o.close),o.closeSync=function(t){function e(e){t.apply(o,arguments),h()}return Object.defineProperty(e,i,{value:t}),e}(o.closeSync),/\bgfs4\b/i.test(process.env.NODE_DEBUG||"")&&process.on("exit",(function(){d(o[r]),n(491).equal(o[r].length,0)}))}function y(t){s(t),t.gracefulify=y,t.createReadStream=function(e,n){return new t.ReadStream(e,n)},t.createWriteStream=function(e,n){return new t.WriteStream(e,n)};var e=t.readFile;t.readFile=function(t,n,r){return"function"==typeof n&&(r=n,n=null),function t(n,r,i,o){return e(n,r,(function(e){!e||"EMFILE"!==e.code&&"ENFILE"!==e.code?"function"==typeof i&&i.apply(this,arguments):m([t,[n,r,i],e,o||Date.now(),Date.now()])}))}(t,n,r)};var n=t.writeFile;t.writeFile=function(t,e,r,i){return"function"==typeof r&&(i=r,r=null),function t(e,r,i,o,s){return n(e,r,i,(function(n){!n||"EMFILE"!==n.code&&"ENFILE"!==n.code?"function"==typeof o&&o.apply(this,arguments):m([t,[e,r,i,o],n,s||Date.now(),Date.now()])}))}(t,e,r,i)};var r=t.appendFile;r&&(t.appendFile=function(t,e,n,i){return"function"==typeof n&&(i=n,n=null),function t(e,n,i,o,s){return r(e,n,i,(function(r){!r||"EMFILE"!==r.code&&"ENFILE"!==r.code?"function"==typeof o&&o.apply(this,arguments):m([t,[e,n,i,o],r,s||Date.now(),Date.now()])}))}(t,e,n,i)});var i=t.copyFile;i&&(t.copyFile=function(t,e,n,r){return"function"==typeof n&&(r=n,n=0),function t(e,n,r,o,s){return i(e,n,r,(function(i){!i||"EMFILE"!==i.code&&"ENFILE"!==i.code?"function"==typeof o&&o.apply(this,arguments):m([t,[e,n,r,o],i,s||Date.now(),Date.now()])}))}(t,e,n,r)});var o=t.readdir;t.readdir=function(t,e,n){"function"==typeof e&&(n=e,e=null);var r=a.test(process.version)?function(t,e,n,r){return o(t,i(t,e,n,r))}:function(t,e,n,r){return o(t,e,i(t,e,n,r))};return r(t,e,n);function i(t,e,n,i){return function(o,s){!o||"EMFILE"!==o.code&&"ENFILE"!==o.code?(s&&s.sort&&s.sort(),"function"==typeof n&&n.call(this,o,s)):m([r,[t,e,n],o,i||Date.now(),Date.now()])}}};var a=/^v[0-5]\./;if("v0.8"===process.version.substr(0,4)){var u=c(t);h=u.ReadStream,w=u.WriteStream}var f=t.ReadStream;f&&(h.prototype=Object.create(f.prototype),h.prototype.open=function(){var t=this;v(t.path,t.flags,t.mode,(function(e,n){e?(t.autoClose&&t.destroy(),t.emit("error",e)):(t.fd=n,t.emit("open",n),t.read())}))});var l=t.WriteStream;l&&(w.prototype=Object.create(l.prototype),w.prototype.open=function(){var t=this;v(t.path,t.flags,t.mode,(function(e,n){e?(t.destroy(),t.emit("error",e)):(t.fd=n,t.emit("open",n))}))}),Object.defineProperty(t,"ReadStream",{get:function(){return h},set:function(t){h=t},enumerable:!0,configurable:!0}),Object.defineProperty(t,"WriteStream",{get:function(){return w},set:function(t){w=t},enumerable:!0,configurable:!0});var d=h;Object.defineProperty(t,"FileReadStream",{get:function(){return d},set:function(t){d=t},enumerable:!0,configurable:!0});var p=w;function h(t,e){return this instanceof h?(f.apply(this,arguments),this):h.apply(Object.create(h.prototype),arguments)}function w(t,e){return this instanceof w?(l.apply(this,arguments),this):w.apply(Object.create(w.prototype),arguments)}Object.defineProperty(t,"FileWriteStream",{get:function(){return p},set:function(t){p=t},enumerable:!0,configurable:!0});var S=t.open;function v(t,e,n,r){return"function"==typeof n&&(r=n,n=null),function t(e,n,r,i,o){return S(e,n,r,(function(s,c){!s||"EMFILE"!==s.code&&"ENFILE"!==s.code?"function"==typeof i&&i.apply(this,arguments):m([t,[e,n,r,i],s,o||Date.now(),Date.now()])}))}(t,e,n,r)}return t.open=v,t}function m(t){d("ENQUEUE",t[0].name,t[1]),o[r].push(t),w()}function h(){for(var t=Date.now(),e=0;e<o[r].length;++e)o[r][e].length>2&&(o[r][e][3]=t,o[r][e][4]=t);w()}function w(){if(clearTimeout(l),l=void 0,0!==o[r].length){var t=o[r].shift(),e=t[0],n=t[1],i=t[2],s=t[3],c=t[4];if(void 0===s)d("RETRY",e.name,n),e.apply(null,n);else if(Date.now()-s>=6e4){d("TIMEOUT",e.name,n);var a=n.pop();"function"==typeof a&&a.call(null,i)}else{var u=Date.now()-c,f=Math.max(c-s,1);u>=Math.min(1.2*f,100)?(d("RETRY",e.name,n),e.apply(null,n.concat([s]))):o[r].push(t)}void 0===l&&(l=setTimeout(w,0))}}global[r]||f(global,o[r]),t.exports=y(a(o)),process.env.TEST_GRACEFUL_FS_GLOBAL_PATCH&&!o.__patched&&(t.exports=y(o),o.__patched=!0)},520:(t,e,n)=>{var r=n(781).Stream;t.exports=function(t){return{ReadStream:function e(n,i){if(!(this instanceof e))return new e(n,i);r.call(this);var o=this;this.path=n,this.fd=null,this.readable=!0,this.paused=!1,this.flags="r",this.mode=438,this.bufferSize=65536,i=i||{};for(var s=Object.keys(i),c=0,a=s.length;c<a;c++){var u=s[c];this[u]=i[u]}if(this.encoding&&this.setEncoding(this.encoding),void 0!==this.start){if("number"!=typeof this.start)throw TypeError("start must be a Number");if(void 0===this.end)this.end=1/0;else if("number"!=typeof this.end)throw TypeError("end must be a Number");if(this.start>this.end)throw new Error("start must be <= end");this.pos=this.start}null===this.fd?t.open(this.path,this.flags,this.mode,(function(t,e){if(t)return o.emit("error",t),void(o.readable=!1);o.fd=e,o.emit("open",e),o._read()})):process.nextTick((function(){o._read()}))},WriteStream:function e(n,i){if(!(this instanceof e))return new e(n,i);r.call(this),this.path=n,this.fd=null,this.writable=!0,this.flags="w",this.encoding="binary",this.mode=438,this.bytesWritten=0,i=i||{};for(var o=Object.keys(i),s=0,c=o.length;s<c;s++){var a=o[s];this[a]=i[a]}if(void 0!==this.start){if("number"!=typeof this.start)throw TypeError("start must be a Number");if(this.start<0)throw new Error("start must be >= zero");this.pos=this.start}this.busy=!1,this._queue=[],null===this.fd&&(this._open=t.open,this._queue.push([this._open,this.path,this.flags,this.mode,void 0]),this.flush())}}}},161:(t,e,n)=>{var r=n(57),i=process.cwd,o=null,s=process.env.GRACEFUL_FS_PLATFORM||process.platform;process.cwd=function(){return o||(o=i.call(process)),o};try{process.cwd()}catch(t){}if("function"==typeof process.chdir){var c=process.chdir;process.chdir=function(t){o=null,c.call(process,t)},Object.setPrototypeOf&&Object.setPrototypeOf(process.chdir,c)}t.exports=function(t){function e(e){return e?function(n,r,i){return e.call(t,n,r,(function(t){u(t)&&(t=null),i&&i.apply(this,arguments)}))}:e}function n(e){return e?function(n,r){try{return e.call(t,n,r)}catch(t){if(!u(t))throw t}}:e}function i(e){return e?function(n,r,i,o){return e.call(t,n,r,i,(function(t){u(t)&&(t=null),o&&o.apply(this,arguments)}))}:e}function o(e){return e?function(n,r,i){try{return e.call(t,n,r,i)}catch(t){if(!u(t))throw t}}:e}function c(e){return e?function(n,r,i){function o(t,e){e&&(e.uid<0&&(e.uid+=4294967296),e.gid<0&&(e.gid+=4294967296)),i&&i.apply(this,arguments)}return"function"==typeof r&&(i=r,r=null),r?e.call(t,n,r,o):e.call(t,n,o)}:e}function a(e){return e?function(n,r){var i=r?e.call(t,n,r):e.call(t,n);return i&&(i.uid<0&&(i.uid+=4294967296),i.gid<0&&(i.gid+=4294967296)),i}:e}function u(t){return!t||"ENOSYS"===t.code||!(process.getuid&&0===process.getuid()||"EINVAL"!==t.code&&"EPERM"!==t.code)}var f;r.hasOwnProperty("O_SYMLINK")&&process.version.match(/^v0\.6\.[0-2]|^v0\.5\./)&&function(t){t.lchmod=function(e,n,i){t.open(e,r.O_WRONLY|r.O_SYMLINK,n,(function(e,r){e?i&&i(e):t.fchmod(r,n,(function(e){t.close(r,(function(t){i&&i(e||t)}))}))}))},t.lchmodSync=function(e,n){var i,o=t.openSync(e,r.O_WRONLY|r.O_SYMLINK,n),s=!0;try{i=t.fchmodSync(o,n),s=!1}finally{if(s)try{t.closeSync(o)}catch(t){}else t.closeSync(o)}return i}}(t),t.lutimes||function(t){r.hasOwnProperty("O_SYMLINK")&&t.futimes?(t.lutimes=function(e,n,i,o){t.open(e,r.O_SYMLINK,(function(e,r){e?o&&o(e):t.futimes(r,n,i,(function(e){t.close(r,(function(t){o&&o(e||t)}))}))}))},t.lutimesSync=function(e,n,i){var o,s=t.openSync(e,r.O_SYMLINK),c=!0;try{o=t.futimesSync(s,n,i),c=!1}finally{if(c)try{t.closeSync(s)}catch(t){}else t.closeSync(s)}return o}):t.futimes&&(t.lutimes=function(t,e,n,r){r&&process.nextTick(r)},t.lutimesSync=function(){})}(t),t.chown=i(t.chown),t.fchown=i(t.fchown),t.lchown=i(t.lchown),t.chmod=e(t.chmod),t.fchmod=e(t.fchmod),t.lchmod=e(t.lchmod),t.chownSync=o(t.chownSync),t.fchownSync=o(t.fchownSync),t.lchownSync=o(t.lchownSync),t.chmodSync=n(t.chmodSync),t.fchmodSync=n(t.fchmodSync),t.lchmodSync=n(t.lchmodSync),t.stat=c(t.stat),t.fstat=c(t.fstat),t.lstat=c(t.lstat),t.statSync=a(t.statSync),t.fstatSync=a(t.fstatSync),t.lstatSync=a(t.lstatSync),t.chmod&&!t.lchmod&&(t.lchmod=function(t,e,n){n&&process.nextTick(n)},t.lchmodSync=function(){}),t.chown&&!t.lchown&&(t.lchown=function(t,e,n,r){r&&process.nextTick(r)},t.lchownSync=function(){}),"win32"===s&&(t.rename="function"!=typeof t.rename?t.rename:function(e){function n(n,r,i){var o=Date.now(),s=0;e(n,r,(function c(a){if(a&&("EACCES"===a.code||"EPERM"===a.code||"EBUSY"===a.code)&&Date.now()-o<6e4)return setTimeout((function(){t.stat(r,(function(t,o){t&&"ENOENT"===t.code?e(n,r,c):i(a)}))}),s),void(s<100&&(s+=10));i&&i(a)}))}return Object.setPrototypeOf&&Object.setPrototypeOf(n,e),n}(t.rename)),t.read="function"!=typeof t.read?t.read:function(e){function n(n,r,i,o,s,c){var a;if(c&&"function"==typeof c){var u=0;a=function(f,l,d){if(f&&"EAGAIN"===f.code&&u<10)return u++,e.call(t,n,r,i,o,s,a);c.apply(this,arguments)}}return e.call(t,n,r,i,o,s,a)}return Object.setPrototypeOf&&Object.setPrototypeOf(n,e),n}(t.read),t.readSync="function"!=typeof t.readSync?t.readSync:(f=t.readSync,function(e,n,r,i,o){for(var s=0;;)try{return f.call(t,e,n,r,i,o)}catch(t){if("EAGAIN"===t.code&&s<10){s++;continue}throw t}})}},813:(t,e,n)=>{let r;try{r=n(77)}catch(t){r=n(147)}const i=n(981),{stringify:o,stripBom:s}=n(780),c={readFile:i.fromPromise((async function(t,e={}){"string"==typeof e&&(e={encoding:e});const n=e.fs||r,o=!("throws"in e)||e.throws;let c,a=await i.fromCallback(n.readFile)(t,e);a=s(a);try{c=JSON.parse(a,e?e.reviver:null)}catch(e){if(o)throw e.message=`${t}: ${e.message}`,e;return null}return c})),readFileSync:function(t,e={}){"string"==typeof e&&(e={encoding:e});const n=e.fs||r,i=!("throws"in e)||e.throws;try{let r=n.readFileSync(t,e);return r=s(r),JSON.parse(r,e.reviver)}catch(e){if(i)throw e.message=`${t}: ${e.message}`,e;return null}},writeFile:i.fromPromise((async function(t,e,n={}){const s=n.fs||r,c=o(e,n);await i.fromCallback(s.writeFile)(t,c,n)})),writeFileSync:function(t,e,n={}){const i=n.fs||r,s=o(e,n);return i.writeFileSync(t,s,n)}};t.exports=c},780:t=>{t.exports={stringify:function(t,{EOL:e="\n",finalEOL:n=!0,replacer:r=null,spaces:i}={}){const o=n?e:"";return JSON.stringify(t,r,i).replace(/\n/g,e)+o},stripBom:function(t){return Buffer.isBuffer(t)&&(t=t.toString("utf8")),t.replace(/^\uFEFF/,"")}}},413:(t,e,n)=>{"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.registerCreateScript=void 0;const r=n(496),i=n(17),o=n(496),s=n(674);async function c(t,e){await s.ensureDir(e);const n=await s.readdir(t);for(const r of n){const n=i.join(t,r),o=i.join(e,r);(await s.stat(n)).isDirectory()?await c(n,o):await s.copyFile(n,o)}}e.registerCreateScript=t=>{t.subscriptions.push(o.commands.registerCommand("CodeToolBox.createScript",(async t=>{const e=r.workspace.rootPath||"",n=i.join(e,"materials","blocks"),o=t._fsPath;if(n)if(o)try{await c(n,o),r.window.showInformationMessage("复制文件夹内容成功")}catch(t){r.window.showErrorMessage("复制文件夹内容失败")}else r.window.showErrorMessage("请选择目标文件夹");else r.window.showErrorMessage("请选择来源文件夹")})))}},93:(t,e,n)=>{"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.registerCreateSnippets=void 0;const r=n(496),i=n(677);e.registerCreateSnippets=t=>{t.subscriptions.push(r.commands.registerCommand("CodeToolBox.createSnippets",(async()=>{(0,i.showWebView)(t,{key:"main",title:"添加代码片段",viewColumn:1,task:{task:"route",data:{path:"/add-snippets"}}})})))}},907:(t,e,n)=>{"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.registerRunWebView=void 0;const r=n(496),i=n(677);e.registerRunWebView=t=>{t.subscriptions.push(r.commands.registerCommand("CodeToolBox.webview",(()=>{(0,i.showWebView)(t,{key:"main",title:"添加代码片段",viewColumn:1,task:{task:"route",data:{path:"/add-snippets"}}})})))}},677:(t,e,n)=>{"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.getHtmlForWebview=e.showWebView=void 0;const r=n(496),i=n(912),o=n(17);let s=[];e.showWebView=(t,n)=>{const i=s.find((t=>t.key===n.key));if(i)i.panel.reveal(),n.task&&i.panel.webview.postMessage({cmd:"vscodePushTask",task:n.task.task,data:n.task.data});else{const i=r.window.createWebviewPanel("CodeToolBox",n.title||"CodeToolBox",{viewColumn:n.viewColumn||r.ViewColumn.Two},{enableScripts:!0,retainContextWhenHidden:!0});i.iconPath=r.Uri.file(o.join(t.extensionPath,"images","title.jpg")),i.webview.html=(0,e.getHtmlForWebview)(t,i);const c=[];i.webview.onDidReceiveMessage((async e=>{"webviewLoaded"===e.cmd&&n.task&&i.webview.postMessage({cmd:"vscodePushTask",task:n?.task?.task,data:n?.task?.data}),a[e.cmd]&&a[e.cmd](t,e)}),null,c),i.onDidDispose((()=>{for(i.dispose();c.length;){const t=c.pop();t&&t.dispose()}s=s.filter((t=>t.key!==n.key))}),null,c),s.push({key:n.key,panel:i,disposables:c})}},e.getHtmlForWebview=(t,e)=>{let n="";if(t.extensionMode===r.ExtensionMode.Production){const i=r.Uri.file(o.join(t.extensionPath,"webview-dist","main.es.js"));n=e.webview.asWebviewUri(i)}else n="http://127.0.0.1:7979/src/main.ts";return c(n)};const c=t=>`<!doctype html>\n    <html lang="en">\n    <head>\n      <meta charset="UTF-8">\n      <meta http-equiv="X-UA-Compatible" content="IE=edge">\n      <meta name="viewport" content="width=device-width,initial-scale=1">\n      <title>webview-react</title>\n      <script>\n         window.vscode = acquireVsCodeApi();\n      <\/script>\n    </head>\n    <body>\n      <div id="app"></div>\n      <script  type="module" src="${t}"><\/script>\n    </body>\n    </html>`,a={addSnippets:i.addSnippets}},912:(t,e,n)=>{"use strict";Object.defineProperty(e,"__esModule",{value:!0}),e.addSnippets=void 0;const r=n(496);e.addSnippets=(t,e)=>{const n=r.Uri.joinPath(t.extensionUri,".vscode","test.code-snippets"),i={[e.data.tips]:{prefix:e.data?.prefix,body:[e.data?.body],description:e.data?.description}};(async()=>{try{let t={};const o=await r.workspace.fs.readFile(n);t=JSON.parse(o.toString()),t[i[e.data.tips].prefix]||(t={...t,...i});const s=JSON.stringify(t,null,2);await r.workspace.fs.writeFile(n,Buffer.from(s,"utf-8")),r.window.showInformationMessage("代码片段添加成功!")}catch(t){r.window.showErrorMessage(`代码片段添加失败: ${t}`)}})()}},981:(t,e)=>{"use strict";e.fromCallback=function(t){return Object.defineProperty((function(...e){if("function"!=typeof e[e.length-1])return new Promise(((n,r)=>{t.call(this,...e,((t,e)=>null!=t?r(t):n(e)))}));t.apply(this,e)}),"name",{value:t.name})},e.fromPromise=function(t){return Object.defineProperty((function(...e){const n=e[e.length-1];if("function"!=typeof n)return t.apply(this,e);t.apply(this,e.slice(0,-1)).then((t=>n(null,t)),n)}),"name",{value:t.name})}},496:t=>{"use strict";t.exports=require("vscode")},491:t=>{"use strict";t.exports=require("assert")},57:t=>{"use strict";t.exports=require("constants")},147:t=>{"use strict";t.exports=require("fs")},17:t=>{"use strict";t.exports=require("path")},781:t=>{"use strict";t.exports=require("stream")},837:t=>{"use strict";t.exports=require("util")}},e={};function n(r){var i=e[r];if(void 0!==i)return i.exports;var o=e[r]={exports:{}};return t[r](o,o.exports,n),o.exports}var r={};(()=>{"use strict";var t=r;Object.defineProperty(t,"__esModule",{value:!0}),t.deactivate=t.activate=void 0;const e=n(413),i=n(907),o=n(93);t.activate=function(t){(0,e.registerCreateScript)(t),(0,i.registerRunWebView)(t),(0,o.registerCreateSnippets)(t)},t.deactivate=function(){}})(),module.exports=r})();
+/******/ (() => { // webpackBootstrap
+/******/ 	var __webpack_modules__ = ([
+/* 0 */,
+/* 1 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.registerCreateScript = void 0;
+const vscode = __webpack_require__(2);
+const path = __webpack_require__(3);
+const vscode_1 = __webpack_require__(2);
+const fs = __webpack_require__(4);
+const registerCreateScript = (context) => {
+    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.createScript", async (args) => {
+        const rootPath = vscode.workspace.rootPath || ""; // 获取当前右键文件夹位置作为目标源
+        // 规定复制源位置
+        const sourceFolderPath = path.join(rootPath, "materials", "blocks");
+        const targetFolderPath = args._fsPath;
+        if (!sourceFolderPath) {
+            vscode.window.showErrorMessage("请选择来源文件夹");
+            return;
+        }
+        if (!targetFolderPath) {
+            vscode.window.showErrorMessage("请选择目标文件夹");
+            return;
+        }
+        try {
+            await copyDirectoryContents(sourceFolderPath, targetFolderPath);
+            vscode.window.showInformationMessage("复制文件夹内容成功");
+        }
+        catch (error) {
+            vscode.window.showErrorMessage(`复制文件夹内容失败`);
+        }
+    }));
+};
+exports.registerCreateScript = registerCreateScript;
+async function copyDirectoryContents(sourcePath, targetPath) {
+    // 确保目标目录存在，如果不存在则创建
+    await fs.ensureDir(targetPath);
+    // 获取源目录的内容列表
+    const sourceItems = await fs.readdir(sourcePath);
+    // 遍历源目录的内容
+    for (const sourceItem of sourceItems) {
+        const sourceItemPath = path.join(sourcePath, sourceItem);
+        const targetItemPath = path.join(targetPath, sourceItem);
+        // 判断是文件还是文件夹
+        const isDirectory = (await fs.stat(sourceItemPath)).isDirectory();
+        if (isDirectory) {
+            // 如果是文件夹，递归复制子文件夹
+            await copyDirectoryContents(sourceItemPath, targetItemPath);
+        }
+        else {
+            // 如果是文件，直接复制
+            await fs.copyFile(sourceItemPath, targetItemPath);
+        }
+    }
+}
+
+
+/***/ }),
+/* 2 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("vscode");
+
+/***/ }),
+/* 3 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("path");
+
+/***/ }),
+/* 4 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+module.exports = {
+  // Export promiseified graceful-fs:
+  ...__webpack_require__(5),
+  // Export extra methods:
+  ...__webpack_require__(16),
+  ...__webpack_require__(25),
+  ...__webpack_require__(27),
+  ...__webpack_require__(33),
+  ...__webpack_require__(18),
+  ...__webpack_require__(40),
+  ...__webpack_require__(38),
+  ...__webpack_require__(21),
+  ...__webpack_require__(26)
+}
+
+
+/***/ }),
+/* 5 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+// This is adapted from https://github.com/normalize/mz
+// Copyright (c) 2014-2016 Jonathan Ong me@jongleberry.com and Contributors
+const u = (__webpack_require__(6).fromCallback)
+const fs = __webpack_require__(7)
+
+const api = [
+  'access',
+  'appendFile',
+  'chmod',
+  'chown',
+  'close',
+  'copyFile',
+  'fchmod',
+  'fchown',
+  'fdatasync',
+  'fstat',
+  'fsync',
+  'ftruncate',
+  'futimes',
+  'lchmod',
+  'lchown',
+  'link',
+  'lstat',
+  'mkdir',
+  'mkdtemp',
+  'open',
+  'opendir',
+  'readdir',
+  'readFile',
+  'readlink',
+  'realpath',
+  'rename',
+  'rm',
+  'rmdir',
+  'stat',
+  'symlink',
+  'truncate',
+  'unlink',
+  'utimes',
+  'writeFile'
+].filter(key => {
+  // Some commands are not available on some systems. Ex:
+  // fs.cp was added in Node.js v16.7.0
+  // fs.lchown is not available on at least some Linux
+  return typeof fs[key] === 'function'
+})
+
+// Export cloned fs:
+Object.assign(exports, fs)
+
+// Universalify async methods:
+api.forEach(method => {
+  exports[method] = u(fs[method])
+})
+
+// We differ from mz/fs in that we still ship the old, broken, fs.exists()
+// since we are a drop-in replacement for the native module
+exports.exists = function (filename, callback) {
+  if (typeof callback === 'function') {
+    return fs.exists(filename, callback)
+  }
+  return new Promise(resolve => {
+    return fs.exists(filename, resolve)
+  })
+}
+
+// fs.read(), fs.write(), fs.readv(), & fs.writev() need special treatment due to multiple callback args
+
+exports.read = function (fd, buffer, offset, length, position, callback) {
+  if (typeof callback === 'function') {
+    return fs.read(fd, buffer, offset, length, position, callback)
+  }
+  return new Promise((resolve, reject) => {
+    fs.read(fd, buffer, offset, length, position, (err, bytesRead, buffer) => {
+      if (err) return reject(err)
+      resolve({ bytesRead, buffer })
+    })
+  })
+}
+
+// Function signature can be
+// fs.write(fd, buffer[, offset[, length[, position]]], callback)
+// OR
+// fs.write(fd, string[, position[, encoding]], callback)
+// We need to handle both cases, so we use ...args
+exports.write = function (fd, buffer, ...args) {
+  if (typeof args[args.length - 1] === 'function') {
+    return fs.write(fd, buffer, ...args)
+  }
+
+  return new Promise((resolve, reject) => {
+    fs.write(fd, buffer, ...args, (err, bytesWritten, buffer) => {
+      if (err) return reject(err)
+      resolve({ bytesWritten, buffer })
+    })
+  })
+}
+
+// Function signature is
+// s.readv(fd, buffers[, position], callback)
+// We need to handle the optional arg, so we use ...args
+exports.readv = function (fd, buffers, ...args) {
+  if (typeof args[args.length - 1] === 'function') {
+    return fs.readv(fd, buffers, ...args)
+  }
+
+  return new Promise((resolve, reject) => {
+    fs.readv(fd, buffers, ...args, (err, bytesRead, buffers) => {
+      if (err) return reject(err)
+      resolve({ bytesRead, buffers })
+    })
+  })
+}
+
+// Function signature is
+// s.writev(fd, buffers[, position], callback)
+// We need to handle the optional arg, so we use ...args
+exports.writev = function (fd, buffers, ...args) {
+  if (typeof args[args.length - 1] === 'function') {
+    return fs.writev(fd, buffers, ...args)
+  }
+
+  return new Promise((resolve, reject) => {
+    fs.writev(fd, buffers, ...args, (err, bytesWritten, buffers) => {
+      if (err) return reject(err)
+      resolve({ bytesWritten, buffers })
+    })
+  })
+}
+
+// fs.realpath.native sometimes not available if fs is monkey-patched
+if (typeof fs.realpath.native === 'function') {
+  exports.realpath.native = u(fs.realpath.native)
+} else {
+  process.emitWarning(
+    'fs.realpath.native is not a function. Is fs being monkey-patched?',
+    'Warning', 'fs-extra-WARN0003'
+  )
+}
+
+
+/***/ }),
+/* 6 */
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+
+exports.fromCallback = function (fn) {
+  return Object.defineProperty(function (...args) {
+    if (typeof args[args.length - 1] === 'function') fn.apply(this, args)
+    else {
+      return new Promise((resolve, reject) => {
+        fn.call(
+          this,
+          ...args,
+          (err, res) => (err != null) ? reject(err) : resolve(res)
+        )
+      })
+    }
+  }, 'name', { value: fn.name })
+}
+
+exports.fromPromise = function (fn) {
+  return Object.defineProperty(function (...args) {
+    const cb = args[args.length - 1]
+    if (typeof cb !== 'function') return fn.apply(this, args)
+    else fn.apply(this, args.slice(0, -1)).then(r => cb(null, r), cb)
+  }, 'name', { value: fn.name })
+}
+
+
+/***/ }),
+/* 7 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var fs = __webpack_require__(8)
+var polyfills = __webpack_require__(9)
+var legacy = __webpack_require__(11)
+var clone = __webpack_require__(13)
+
+var util = __webpack_require__(14)
+
+/* istanbul ignore next - node 0.x polyfill */
+var gracefulQueue
+var previousSymbol
+
+/* istanbul ignore else - node 0.x polyfill */
+if (typeof Symbol === 'function' && typeof Symbol.for === 'function') {
+  gracefulQueue = Symbol.for('graceful-fs.queue')
+  // This is used in testing by future versions
+  previousSymbol = Symbol.for('graceful-fs.previous')
+} else {
+  gracefulQueue = '___graceful-fs.queue'
+  previousSymbol = '___graceful-fs.previous'
+}
+
+function noop () {}
+
+function publishQueue(context, queue) {
+  Object.defineProperty(context, gracefulQueue, {
+    get: function() {
+      return queue
+    }
+  })
+}
+
+var debug = noop
+if (util.debuglog)
+  debug = util.debuglog('gfs4')
+else if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || ''))
+  debug = function() {
+    var m = util.format.apply(util, arguments)
+    m = 'GFS4: ' + m.split(/\n/).join('\nGFS4: ')
+    console.error(m)
+  }
+
+// Once time initialization
+if (!fs[gracefulQueue]) {
+  // This queue can be shared by multiple loaded instances
+  var queue = global[gracefulQueue] || []
+  publishQueue(fs, queue)
+
+  // Patch fs.close/closeSync to shared queue version, because we need
+  // to retry() whenever a close happens *anywhere* in the program.
+  // This is essential when multiple graceful-fs instances are
+  // in play at the same time.
+  fs.close = (function (fs$close) {
+    function close (fd, cb) {
+      return fs$close.call(fs, fd, function (err) {
+        // This function uses the graceful-fs shared queue
+        if (!err) {
+          resetQueue()
+        }
+
+        if (typeof cb === 'function')
+          cb.apply(this, arguments)
+      })
+    }
+
+    Object.defineProperty(close, previousSymbol, {
+      value: fs$close
+    })
+    return close
+  })(fs.close)
+
+  fs.closeSync = (function (fs$closeSync) {
+    function closeSync (fd) {
+      // This function uses the graceful-fs shared queue
+      fs$closeSync.apply(fs, arguments)
+      resetQueue()
+    }
+
+    Object.defineProperty(closeSync, previousSymbol, {
+      value: fs$closeSync
+    })
+    return closeSync
+  })(fs.closeSync)
+
+  if (/\bgfs4\b/i.test(process.env.NODE_DEBUG || '')) {
+    process.on('exit', function() {
+      debug(fs[gracefulQueue])
+      __webpack_require__(15).equal(fs[gracefulQueue].length, 0)
+    })
+  }
+}
+
+if (!global[gracefulQueue]) {
+  publishQueue(global, fs[gracefulQueue]);
+}
+
+module.exports = patch(clone(fs))
+if (process.env.TEST_GRACEFUL_FS_GLOBAL_PATCH && !fs.__patched) {
+    module.exports = patch(fs)
+    fs.__patched = true;
+}
+
+function patch (fs) {
+  // Everything that references the open() function needs to be in here
+  polyfills(fs)
+  fs.gracefulify = patch
+
+  fs.createReadStream = createReadStream
+  fs.createWriteStream = createWriteStream
+  var fs$readFile = fs.readFile
+  fs.readFile = readFile
+  function readFile (path, options, cb) {
+    if (typeof options === 'function')
+      cb = options, options = null
+
+    return go$readFile(path, options, cb)
+
+    function go$readFile (path, options, cb, startTime) {
+      return fs$readFile(path, options, function (err) {
+        if (err && (err.code === 'EMFILE' || err.code === 'ENFILE'))
+          enqueue([go$readFile, [path, options, cb], err, startTime || Date.now(), Date.now()])
+        else {
+          if (typeof cb === 'function')
+            cb.apply(this, arguments)
+        }
+      })
+    }
+  }
+
+  var fs$writeFile = fs.writeFile
+  fs.writeFile = writeFile
+  function writeFile (path, data, options, cb) {
+    if (typeof options === 'function')
+      cb = options, options = null
+
+    return go$writeFile(path, data, options, cb)
+
+    function go$writeFile (path, data, options, cb, startTime) {
+      return fs$writeFile(path, data, options, function (err) {
+        if (err && (err.code === 'EMFILE' || err.code === 'ENFILE'))
+          enqueue([go$writeFile, [path, data, options, cb], err, startTime || Date.now(), Date.now()])
+        else {
+          if (typeof cb === 'function')
+            cb.apply(this, arguments)
+        }
+      })
+    }
+  }
+
+  var fs$appendFile = fs.appendFile
+  if (fs$appendFile)
+    fs.appendFile = appendFile
+  function appendFile (path, data, options, cb) {
+    if (typeof options === 'function')
+      cb = options, options = null
+
+    return go$appendFile(path, data, options, cb)
+
+    function go$appendFile (path, data, options, cb, startTime) {
+      return fs$appendFile(path, data, options, function (err) {
+        if (err && (err.code === 'EMFILE' || err.code === 'ENFILE'))
+          enqueue([go$appendFile, [path, data, options, cb], err, startTime || Date.now(), Date.now()])
+        else {
+          if (typeof cb === 'function')
+            cb.apply(this, arguments)
+        }
+      })
+    }
+  }
+
+  var fs$copyFile = fs.copyFile
+  if (fs$copyFile)
+    fs.copyFile = copyFile
+  function copyFile (src, dest, flags, cb) {
+    if (typeof flags === 'function') {
+      cb = flags
+      flags = 0
+    }
+    return go$copyFile(src, dest, flags, cb)
+
+    function go$copyFile (src, dest, flags, cb, startTime) {
+      return fs$copyFile(src, dest, flags, function (err) {
+        if (err && (err.code === 'EMFILE' || err.code === 'ENFILE'))
+          enqueue([go$copyFile, [src, dest, flags, cb], err, startTime || Date.now(), Date.now()])
+        else {
+          if (typeof cb === 'function')
+            cb.apply(this, arguments)
+        }
+      })
+    }
+  }
+
+  var fs$readdir = fs.readdir
+  fs.readdir = readdir
+  var noReaddirOptionVersions = /^v[0-5]\./
+  function readdir (path, options, cb) {
+    if (typeof options === 'function')
+      cb = options, options = null
+
+    var go$readdir = noReaddirOptionVersions.test(process.version)
+      ? function go$readdir (path, options, cb, startTime) {
+        return fs$readdir(path, fs$readdirCallback(
+          path, options, cb, startTime
+        ))
+      }
+      : function go$readdir (path, options, cb, startTime) {
+        return fs$readdir(path, options, fs$readdirCallback(
+          path, options, cb, startTime
+        ))
+      }
+
+    return go$readdir(path, options, cb)
+
+    function fs$readdirCallback (path, options, cb, startTime) {
+      return function (err, files) {
+        if (err && (err.code === 'EMFILE' || err.code === 'ENFILE'))
+          enqueue([
+            go$readdir,
+            [path, options, cb],
+            err,
+            startTime || Date.now(),
+            Date.now()
+          ])
+        else {
+          if (files && files.sort)
+            files.sort()
+
+          if (typeof cb === 'function')
+            cb.call(this, err, files)
+        }
+      }
+    }
+  }
+
+  if (process.version.substr(0, 4) === 'v0.8') {
+    var legStreams = legacy(fs)
+    ReadStream = legStreams.ReadStream
+    WriteStream = legStreams.WriteStream
+  }
+
+  var fs$ReadStream = fs.ReadStream
+  if (fs$ReadStream) {
+    ReadStream.prototype = Object.create(fs$ReadStream.prototype)
+    ReadStream.prototype.open = ReadStream$open
+  }
+
+  var fs$WriteStream = fs.WriteStream
+  if (fs$WriteStream) {
+    WriteStream.prototype = Object.create(fs$WriteStream.prototype)
+    WriteStream.prototype.open = WriteStream$open
+  }
+
+  Object.defineProperty(fs, 'ReadStream', {
+    get: function () {
+      return ReadStream
+    },
+    set: function (val) {
+      ReadStream = val
+    },
+    enumerable: true,
+    configurable: true
+  })
+  Object.defineProperty(fs, 'WriteStream', {
+    get: function () {
+      return WriteStream
+    },
+    set: function (val) {
+      WriteStream = val
+    },
+    enumerable: true,
+    configurable: true
+  })
+
+  // legacy names
+  var FileReadStream = ReadStream
+  Object.defineProperty(fs, 'FileReadStream', {
+    get: function () {
+      return FileReadStream
+    },
+    set: function (val) {
+      FileReadStream = val
+    },
+    enumerable: true,
+    configurable: true
+  })
+  var FileWriteStream = WriteStream
+  Object.defineProperty(fs, 'FileWriteStream', {
+    get: function () {
+      return FileWriteStream
+    },
+    set: function (val) {
+      FileWriteStream = val
+    },
+    enumerable: true,
+    configurable: true
+  })
+
+  function ReadStream (path, options) {
+    if (this instanceof ReadStream)
+      return fs$ReadStream.apply(this, arguments), this
+    else
+      return ReadStream.apply(Object.create(ReadStream.prototype), arguments)
+  }
+
+  function ReadStream$open () {
+    var that = this
+    open(that.path, that.flags, that.mode, function (err, fd) {
+      if (err) {
+        if (that.autoClose)
+          that.destroy()
+
+        that.emit('error', err)
+      } else {
+        that.fd = fd
+        that.emit('open', fd)
+        that.read()
+      }
+    })
+  }
+
+  function WriteStream (path, options) {
+    if (this instanceof WriteStream)
+      return fs$WriteStream.apply(this, arguments), this
+    else
+      return WriteStream.apply(Object.create(WriteStream.prototype), arguments)
+  }
+
+  function WriteStream$open () {
+    var that = this
+    open(that.path, that.flags, that.mode, function (err, fd) {
+      if (err) {
+        that.destroy()
+        that.emit('error', err)
+      } else {
+        that.fd = fd
+        that.emit('open', fd)
+      }
+    })
+  }
+
+  function createReadStream (path, options) {
+    return new fs.ReadStream(path, options)
+  }
+
+  function createWriteStream (path, options) {
+    return new fs.WriteStream(path, options)
+  }
+
+  var fs$open = fs.open
+  fs.open = open
+  function open (path, flags, mode, cb) {
+    if (typeof mode === 'function')
+      cb = mode, mode = null
+
+    return go$open(path, flags, mode, cb)
+
+    function go$open (path, flags, mode, cb, startTime) {
+      return fs$open(path, flags, mode, function (err, fd) {
+        if (err && (err.code === 'EMFILE' || err.code === 'ENFILE'))
+          enqueue([go$open, [path, flags, mode, cb], err, startTime || Date.now(), Date.now()])
+        else {
+          if (typeof cb === 'function')
+            cb.apply(this, arguments)
+        }
+      })
+    }
+  }
+
+  return fs
+}
+
+function enqueue (elem) {
+  debug('ENQUEUE', elem[0].name, elem[1])
+  fs[gracefulQueue].push(elem)
+  retry()
+}
+
+// keep track of the timeout between retry() calls
+var retryTimer
+
+// reset the startTime and lastTime to now
+// this resets the start of the 60 second overall timeout as well as the
+// delay between attempts so that we'll retry these jobs sooner
+function resetQueue () {
+  var now = Date.now()
+  for (var i = 0; i < fs[gracefulQueue].length; ++i) {
+    // entries that are only a length of 2 are from an older version, don't
+    // bother modifying those since they'll be retried anyway.
+    if (fs[gracefulQueue][i].length > 2) {
+      fs[gracefulQueue][i][3] = now // startTime
+      fs[gracefulQueue][i][4] = now // lastTime
+    }
+  }
+  // call retry to make sure we're actively processing the queue
+  retry()
+}
+
+function retry () {
+  // clear the timer and remove it to help prevent unintended concurrency
+  clearTimeout(retryTimer)
+  retryTimer = undefined
+
+  if (fs[gracefulQueue].length === 0)
+    return
+
+  var elem = fs[gracefulQueue].shift()
+  var fn = elem[0]
+  var args = elem[1]
+  // these items may be unset if they were added by an older graceful-fs
+  var err = elem[2]
+  var startTime = elem[3]
+  var lastTime = elem[4]
+
+  // if we don't have a startTime we have no way of knowing if we've waited
+  // long enough, so go ahead and retry this item now
+  if (startTime === undefined) {
+    debug('RETRY', fn.name, args)
+    fn.apply(null, args)
+  } else if (Date.now() - startTime >= 60000) {
+    // it's been more than 60 seconds total, bail now
+    debug('TIMEOUT', fn.name, args)
+    var cb = args.pop()
+    if (typeof cb === 'function')
+      cb.call(null, err)
+  } else {
+    // the amount of time between the last attempt and right now
+    var sinceAttempt = Date.now() - lastTime
+    // the amount of time between when we first tried, and when we last tried
+    // rounded up to at least 1
+    var sinceStart = Math.max(lastTime - startTime, 1)
+    // backoff. wait longer than the total time we've been retrying, but only
+    // up to a maximum of 100ms
+    var desiredDelay = Math.min(sinceStart * 1.2, 100)
+    // it's been long enough since the last retry, do it again
+    if (sinceAttempt >= desiredDelay) {
+      debug('RETRY', fn.name, args)
+      fn.apply(null, args.concat([startTime]))
+    } else {
+      // if we can't do this job yet, push it to the end of the queue
+      // and let the next iteration check again
+      fs[gracefulQueue].push(elem)
+    }
+  }
+
+  // schedule our next run if one isn't already scheduled
+  if (retryTimer === undefined) {
+    retryTimer = setTimeout(retry, 0)
+  }
+}
+
+
+/***/ }),
+/* 8 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("fs");
+
+/***/ }),
+/* 9 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var constants = __webpack_require__(10)
+
+var origCwd = process.cwd
+var cwd = null
+
+var platform = process.env.GRACEFUL_FS_PLATFORM || process.platform
+
+process.cwd = function() {
+  if (!cwd)
+    cwd = origCwd.call(process)
+  return cwd
+}
+try {
+  process.cwd()
+} catch (er) {}
+
+// This check is needed until node.js 12 is required
+if (typeof process.chdir === 'function') {
+  var chdir = process.chdir
+  process.chdir = function (d) {
+    cwd = null
+    chdir.call(process, d)
+  }
+  if (Object.setPrototypeOf) Object.setPrototypeOf(process.chdir, chdir)
+}
+
+module.exports = patch
+
+function patch (fs) {
+  // (re-)implement some things that are known busted or missing.
+
+  // lchmod, broken prior to 0.6.2
+  // back-port the fix here.
+  if (constants.hasOwnProperty('O_SYMLINK') &&
+      process.version.match(/^v0\.6\.[0-2]|^v0\.5\./)) {
+    patchLchmod(fs)
+  }
+
+  // lutimes implementation, or no-op
+  if (!fs.lutimes) {
+    patchLutimes(fs)
+  }
+
+  // https://github.com/isaacs/node-graceful-fs/issues/4
+  // Chown should not fail on einval or eperm if non-root.
+  // It should not fail on enosys ever, as this just indicates
+  // that a fs doesn't support the intended operation.
+
+  fs.chown = chownFix(fs.chown)
+  fs.fchown = chownFix(fs.fchown)
+  fs.lchown = chownFix(fs.lchown)
+
+  fs.chmod = chmodFix(fs.chmod)
+  fs.fchmod = chmodFix(fs.fchmod)
+  fs.lchmod = chmodFix(fs.lchmod)
+
+  fs.chownSync = chownFixSync(fs.chownSync)
+  fs.fchownSync = chownFixSync(fs.fchownSync)
+  fs.lchownSync = chownFixSync(fs.lchownSync)
+
+  fs.chmodSync = chmodFixSync(fs.chmodSync)
+  fs.fchmodSync = chmodFixSync(fs.fchmodSync)
+  fs.lchmodSync = chmodFixSync(fs.lchmodSync)
+
+  fs.stat = statFix(fs.stat)
+  fs.fstat = statFix(fs.fstat)
+  fs.lstat = statFix(fs.lstat)
+
+  fs.statSync = statFixSync(fs.statSync)
+  fs.fstatSync = statFixSync(fs.fstatSync)
+  fs.lstatSync = statFixSync(fs.lstatSync)
+
+  // if lchmod/lchown do not exist, then make them no-ops
+  if (fs.chmod && !fs.lchmod) {
+    fs.lchmod = function (path, mode, cb) {
+      if (cb) process.nextTick(cb)
+    }
+    fs.lchmodSync = function () {}
+  }
+  if (fs.chown && !fs.lchown) {
+    fs.lchown = function (path, uid, gid, cb) {
+      if (cb) process.nextTick(cb)
+    }
+    fs.lchownSync = function () {}
+  }
+
+  // on Windows, A/V software can lock the directory, causing this
+  // to fail with an EACCES or EPERM if the directory contains newly
+  // created files.  Try again on failure, for up to 60 seconds.
+
+  // Set the timeout this long because some Windows Anti-Virus, such as Parity
+  // bit9, may lock files for up to a minute, causing npm package install
+  // failures. Also, take care to yield the scheduler. Windows scheduling gives
+  // CPU to a busy looping process, which can cause the program causing the lock
+  // contention to be starved of CPU by node, so the contention doesn't resolve.
+  if (platform === "win32") {
+    fs.rename = typeof fs.rename !== 'function' ? fs.rename
+    : (function (fs$rename) {
+      function rename (from, to, cb) {
+        var start = Date.now()
+        var backoff = 0;
+        fs$rename(from, to, function CB (er) {
+          if (er
+              && (er.code === "EACCES" || er.code === "EPERM" || er.code === "EBUSY")
+              && Date.now() - start < 60000) {
+            setTimeout(function() {
+              fs.stat(to, function (stater, st) {
+                if (stater && stater.code === "ENOENT")
+                  fs$rename(from, to, CB);
+                else
+                  cb(er)
+              })
+            }, backoff)
+            if (backoff < 100)
+              backoff += 10;
+            return;
+          }
+          if (cb) cb(er)
+        })
+      }
+      if (Object.setPrototypeOf) Object.setPrototypeOf(rename, fs$rename)
+      return rename
+    })(fs.rename)
+  }
+
+  // if read() returns EAGAIN, then just try it again.
+  fs.read = typeof fs.read !== 'function' ? fs.read
+  : (function (fs$read) {
+    function read (fd, buffer, offset, length, position, callback_) {
+      var callback
+      if (callback_ && typeof callback_ === 'function') {
+        var eagCounter = 0
+        callback = function (er, _, __) {
+          if (er && er.code === 'EAGAIN' && eagCounter < 10) {
+            eagCounter ++
+            return fs$read.call(fs, fd, buffer, offset, length, position, callback)
+          }
+          callback_.apply(this, arguments)
+        }
+      }
+      return fs$read.call(fs, fd, buffer, offset, length, position, callback)
+    }
+
+    // This ensures `util.promisify` works as it does for native `fs.read`.
+    if (Object.setPrototypeOf) Object.setPrototypeOf(read, fs$read)
+    return read
+  })(fs.read)
+
+  fs.readSync = typeof fs.readSync !== 'function' ? fs.readSync
+  : (function (fs$readSync) { return function (fd, buffer, offset, length, position) {
+    var eagCounter = 0
+    while (true) {
+      try {
+        return fs$readSync.call(fs, fd, buffer, offset, length, position)
+      } catch (er) {
+        if (er.code === 'EAGAIN' && eagCounter < 10) {
+          eagCounter ++
+          continue
+        }
+        throw er
+      }
+    }
+  }})(fs.readSync)
+
+  function patchLchmod (fs) {
+    fs.lchmod = function (path, mode, callback) {
+      fs.open( path
+             , constants.O_WRONLY | constants.O_SYMLINK
+             , mode
+             , function (err, fd) {
+        if (err) {
+          if (callback) callback(err)
+          return
+        }
+        // prefer to return the chmod error, if one occurs,
+        // but still try to close, and report closing errors if they occur.
+        fs.fchmod(fd, mode, function (err) {
+          fs.close(fd, function(err2) {
+            if (callback) callback(err || err2)
+          })
+        })
+      })
+    }
+
+    fs.lchmodSync = function (path, mode) {
+      var fd = fs.openSync(path, constants.O_WRONLY | constants.O_SYMLINK, mode)
+
+      // prefer to return the chmod error, if one occurs,
+      // but still try to close, and report closing errors if they occur.
+      var threw = true
+      var ret
+      try {
+        ret = fs.fchmodSync(fd, mode)
+        threw = false
+      } finally {
+        if (threw) {
+          try {
+            fs.closeSync(fd)
+          } catch (er) {}
+        } else {
+          fs.closeSync(fd)
+        }
+      }
+      return ret
+    }
+  }
+
+  function patchLutimes (fs) {
+    if (constants.hasOwnProperty("O_SYMLINK") && fs.futimes) {
+      fs.lutimes = function (path, at, mt, cb) {
+        fs.open(path, constants.O_SYMLINK, function (er, fd) {
+          if (er) {
+            if (cb) cb(er)
+            return
+          }
+          fs.futimes(fd, at, mt, function (er) {
+            fs.close(fd, function (er2) {
+              if (cb) cb(er || er2)
+            })
+          })
+        })
+      }
+
+      fs.lutimesSync = function (path, at, mt) {
+        var fd = fs.openSync(path, constants.O_SYMLINK)
+        var ret
+        var threw = true
+        try {
+          ret = fs.futimesSync(fd, at, mt)
+          threw = false
+        } finally {
+          if (threw) {
+            try {
+              fs.closeSync(fd)
+            } catch (er) {}
+          } else {
+            fs.closeSync(fd)
+          }
+        }
+        return ret
+      }
+
+    } else if (fs.futimes) {
+      fs.lutimes = function (_a, _b, _c, cb) { if (cb) process.nextTick(cb) }
+      fs.lutimesSync = function () {}
+    }
+  }
+
+  function chmodFix (orig) {
+    if (!orig) return orig
+    return function (target, mode, cb) {
+      return orig.call(fs, target, mode, function (er) {
+        if (chownErOk(er)) er = null
+        if (cb) cb.apply(this, arguments)
+      })
+    }
+  }
+
+  function chmodFixSync (orig) {
+    if (!orig) return orig
+    return function (target, mode) {
+      try {
+        return orig.call(fs, target, mode)
+      } catch (er) {
+        if (!chownErOk(er)) throw er
+      }
+    }
+  }
+
+
+  function chownFix (orig) {
+    if (!orig) return orig
+    return function (target, uid, gid, cb) {
+      return orig.call(fs, target, uid, gid, function (er) {
+        if (chownErOk(er)) er = null
+        if (cb) cb.apply(this, arguments)
+      })
+    }
+  }
+
+  function chownFixSync (orig) {
+    if (!orig) return orig
+    return function (target, uid, gid) {
+      try {
+        return orig.call(fs, target, uid, gid)
+      } catch (er) {
+        if (!chownErOk(er)) throw er
+      }
+    }
+  }
+
+  function statFix (orig) {
+    if (!orig) return orig
+    // Older versions of Node erroneously returned signed integers for
+    // uid + gid.
+    return function (target, options, cb) {
+      if (typeof options === 'function') {
+        cb = options
+        options = null
+      }
+      function callback (er, stats) {
+        if (stats) {
+          if (stats.uid < 0) stats.uid += 0x100000000
+          if (stats.gid < 0) stats.gid += 0x100000000
+        }
+        if (cb) cb.apply(this, arguments)
+      }
+      return options ? orig.call(fs, target, options, callback)
+        : orig.call(fs, target, callback)
+    }
+  }
+
+  function statFixSync (orig) {
+    if (!orig) return orig
+    // Older versions of Node erroneously returned signed integers for
+    // uid + gid.
+    return function (target, options) {
+      var stats = options ? orig.call(fs, target, options)
+        : orig.call(fs, target)
+      if (stats) {
+        if (stats.uid < 0) stats.uid += 0x100000000
+        if (stats.gid < 0) stats.gid += 0x100000000
+      }
+      return stats;
+    }
+  }
+
+  // ENOSYS means that the fs doesn't support the op. Just ignore
+  // that, because it doesn't matter.
+  //
+  // if there's no getuid, or if getuid() is something other
+  // than 0, and the error is EINVAL or EPERM, then just ignore
+  // it.
+  //
+  // This specific case is a silent failure in cp, install, tar,
+  // and most other unix tools that manage permissions.
+  //
+  // When running as root, or if other types of errors are
+  // encountered, then it's strict.
+  function chownErOk (er) {
+    if (!er)
+      return true
+
+    if (er.code === "ENOSYS")
+      return true
+
+    var nonroot = !process.getuid || process.getuid() !== 0
+    if (nonroot) {
+      if (er.code === "EINVAL" || er.code === "EPERM")
+        return true
+    }
+
+    return false
+  }
+}
+
+
+/***/ }),
+/* 10 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("constants");
+
+/***/ }),
+/* 11 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+var Stream = (__webpack_require__(12).Stream)
+
+module.exports = legacy
+
+function legacy (fs) {
+  return {
+    ReadStream: ReadStream,
+    WriteStream: WriteStream
+  }
+
+  function ReadStream (path, options) {
+    if (!(this instanceof ReadStream)) return new ReadStream(path, options);
+
+    Stream.call(this);
+
+    var self = this;
+
+    this.path = path;
+    this.fd = null;
+    this.readable = true;
+    this.paused = false;
+
+    this.flags = 'r';
+    this.mode = 438; /*=0666*/
+    this.bufferSize = 64 * 1024;
+
+    options = options || {};
+
+    // Mixin options into this
+    var keys = Object.keys(options);
+    for (var index = 0, length = keys.length; index < length; index++) {
+      var key = keys[index];
+      this[key] = options[key];
+    }
+
+    if (this.encoding) this.setEncoding(this.encoding);
+
+    if (this.start !== undefined) {
+      if ('number' !== typeof this.start) {
+        throw TypeError('start must be a Number');
+      }
+      if (this.end === undefined) {
+        this.end = Infinity;
+      } else if ('number' !== typeof this.end) {
+        throw TypeError('end must be a Number');
+      }
+
+      if (this.start > this.end) {
+        throw new Error('start must be <= end');
+      }
+
+      this.pos = this.start;
+    }
+
+    if (this.fd !== null) {
+      process.nextTick(function() {
+        self._read();
+      });
+      return;
+    }
+
+    fs.open(this.path, this.flags, this.mode, function (err, fd) {
+      if (err) {
+        self.emit('error', err);
+        self.readable = false;
+        return;
+      }
+
+      self.fd = fd;
+      self.emit('open', fd);
+      self._read();
+    })
+  }
+
+  function WriteStream (path, options) {
+    if (!(this instanceof WriteStream)) return new WriteStream(path, options);
+
+    Stream.call(this);
+
+    this.path = path;
+    this.fd = null;
+    this.writable = true;
+
+    this.flags = 'w';
+    this.encoding = 'binary';
+    this.mode = 438; /*=0666*/
+    this.bytesWritten = 0;
+
+    options = options || {};
+
+    // Mixin options into this
+    var keys = Object.keys(options);
+    for (var index = 0, length = keys.length; index < length; index++) {
+      var key = keys[index];
+      this[key] = options[key];
+    }
+
+    if (this.start !== undefined) {
+      if ('number' !== typeof this.start) {
+        throw TypeError('start must be a Number');
+      }
+      if (this.start < 0) {
+        throw new Error('start must be >= zero');
+      }
+
+      this.pos = this.start;
+    }
+
+    this.busy = false;
+    this._queue = [];
+
+    if (this.fd === null) {
+      this._open = fs.open;
+      this._queue.push([this._open, this.path, this.flags, this.mode, undefined]);
+      this.flush();
+    }
+  }
+}
+
+
+/***/ }),
+/* 12 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("stream");
+
+/***/ }),
+/* 13 */
+/***/ ((module) => {
+
+"use strict";
+
+
+module.exports = clone
+
+var getPrototypeOf = Object.getPrototypeOf || function (obj) {
+  return obj.__proto__
+}
+
+function clone (obj) {
+  if (obj === null || typeof obj !== 'object')
+    return obj
+
+  if (obj instanceof Object)
+    var copy = { __proto__: getPrototypeOf(obj) }
+  else
+    var copy = Object.create(null)
+
+  Object.getOwnPropertyNames(obj).forEach(function (key) {
+    Object.defineProperty(copy, key, Object.getOwnPropertyDescriptor(obj, key))
+  })
+
+  return copy
+}
+
+
+/***/ }),
+/* 14 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("util");
+
+/***/ }),
+/* 15 */
+/***/ ((module) => {
+
+"use strict";
+module.exports = require("assert");
+
+/***/ }),
+/* 16 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromCallback)
+module.exports = {
+  copy: u(__webpack_require__(17)),
+  copySync: __webpack_require__(24)
+}
+
+
+/***/ }),
+/* 17 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(7)
+const path = __webpack_require__(3)
+const mkdirs = (__webpack_require__(18).mkdirs)
+const pathExists = (__webpack_require__(21).pathExists)
+const utimesMillis = (__webpack_require__(22).utimesMillis)
+const stat = __webpack_require__(23)
+
+function copy (src, dest, opts, cb) {
+  if (typeof opts === 'function' && !cb) {
+    cb = opts
+    opts = {}
+  } else if (typeof opts === 'function') {
+    opts = { filter: opts }
+  }
+
+  cb = cb || function () {}
+  opts = opts || {}
+
+  opts.clobber = 'clobber' in opts ? !!opts.clobber : true // default to true for now
+  opts.overwrite = 'overwrite' in opts ? !!opts.overwrite : opts.clobber // overwrite falls back to clobber
+
+  // Warn about using preserveTimestamps on 32-bit node
+  if (opts.preserveTimestamps && process.arch === 'ia32') {
+    process.emitWarning(
+      'Using the preserveTimestamps option in 32-bit node is not recommended;\n\n' +
+      '\tsee https://github.com/jprichardson/node-fs-extra/issues/269',
+      'Warning', 'fs-extra-WARN0001'
+    )
+  }
+
+  stat.checkPaths(src, dest, 'copy', opts, (err, stats) => {
+    if (err) return cb(err)
+    const { srcStat, destStat } = stats
+    stat.checkParentPaths(src, srcStat, dest, 'copy', err => {
+      if (err) return cb(err)
+      runFilter(src, dest, opts, (err, include) => {
+        if (err) return cb(err)
+        if (!include) return cb()
+
+        checkParentDir(destStat, src, dest, opts, cb)
+      })
+    })
+  })
+}
+
+function checkParentDir (destStat, src, dest, opts, cb) {
+  const destParent = path.dirname(dest)
+  pathExists(destParent, (err, dirExists) => {
+    if (err) return cb(err)
+    if (dirExists) return getStats(destStat, src, dest, opts, cb)
+    mkdirs(destParent, err => {
+      if (err) return cb(err)
+      return getStats(destStat, src, dest, opts, cb)
+    })
+  })
+}
+
+function runFilter (src, dest, opts, cb) {
+  if (!opts.filter) return cb(null, true)
+  Promise.resolve(opts.filter(src, dest))
+    .then(include => cb(null, include), error => cb(error))
+}
+
+function getStats (destStat, src, dest, opts, cb) {
+  const stat = opts.dereference ? fs.stat : fs.lstat
+  stat(src, (err, srcStat) => {
+    if (err) return cb(err)
+
+    if (srcStat.isDirectory()) return onDir(srcStat, destStat, src, dest, opts, cb)
+    else if (srcStat.isFile() ||
+             srcStat.isCharacterDevice() ||
+             srcStat.isBlockDevice()) return onFile(srcStat, destStat, src, dest, opts, cb)
+    else if (srcStat.isSymbolicLink()) return onLink(destStat, src, dest, opts, cb)
+    else if (srcStat.isSocket()) return cb(new Error(`Cannot copy a socket file: ${src}`))
+    else if (srcStat.isFIFO()) return cb(new Error(`Cannot copy a FIFO pipe: ${src}`))
+    return cb(new Error(`Unknown file: ${src}`))
+  })
+}
+
+function onFile (srcStat, destStat, src, dest, opts, cb) {
+  if (!destStat) return copyFile(srcStat, src, dest, opts, cb)
+  return mayCopyFile(srcStat, src, dest, opts, cb)
+}
+
+function mayCopyFile (srcStat, src, dest, opts, cb) {
+  if (opts.overwrite) {
+    fs.unlink(dest, err => {
+      if (err) return cb(err)
+      return copyFile(srcStat, src, dest, opts, cb)
+    })
+  } else if (opts.errorOnExist) {
+    return cb(new Error(`'${dest}' already exists`))
+  } else return cb()
+}
+
+function copyFile (srcStat, src, dest, opts, cb) {
+  fs.copyFile(src, dest, err => {
+    if (err) return cb(err)
+    if (opts.preserveTimestamps) return handleTimestampsAndMode(srcStat.mode, src, dest, cb)
+    return setDestMode(dest, srcStat.mode, cb)
+  })
+}
+
+function handleTimestampsAndMode (srcMode, src, dest, cb) {
+  // Make sure the file is writable before setting the timestamp
+  // otherwise open fails with EPERM when invoked with 'r+'
+  // (through utimes call)
+  if (fileIsNotWritable(srcMode)) {
+    return makeFileWritable(dest, srcMode, err => {
+      if (err) return cb(err)
+      return setDestTimestampsAndMode(srcMode, src, dest, cb)
+    })
+  }
+  return setDestTimestampsAndMode(srcMode, src, dest, cb)
+}
+
+function fileIsNotWritable (srcMode) {
+  return (srcMode & 0o200) === 0
+}
+
+function makeFileWritable (dest, srcMode, cb) {
+  return setDestMode(dest, srcMode | 0o200, cb)
+}
+
+function setDestTimestampsAndMode (srcMode, src, dest, cb) {
+  setDestTimestamps(src, dest, err => {
+    if (err) return cb(err)
+    return setDestMode(dest, srcMode, cb)
+  })
+}
+
+function setDestMode (dest, srcMode, cb) {
+  return fs.chmod(dest, srcMode, cb)
+}
+
+function setDestTimestamps (src, dest, cb) {
+  // The initial srcStat.atime cannot be trusted
+  // because it is modified by the read(2) system call
+  // (See https://nodejs.org/api/fs.html#fs_stat_time_values)
+  fs.stat(src, (err, updatedSrcStat) => {
+    if (err) return cb(err)
+    return utimesMillis(dest, updatedSrcStat.atime, updatedSrcStat.mtime, cb)
+  })
+}
+
+function onDir (srcStat, destStat, src, dest, opts, cb) {
+  if (!destStat) return mkDirAndCopy(srcStat.mode, src, dest, opts, cb)
+  return copyDir(src, dest, opts, cb)
+}
+
+function mkDirAndCopy (srcMode, src, dest, opts, cb) {
+  fs.mkdir(dest, err => {
+    if (err) return cb(err)
+    copyDir(src, dest, opts, err => {
+      if (err) return cb(err)
+      return setDestMode(dest, srcMode, cb)
+    })
+  })
+}
+
+function copyDir (src, dest, opts, cb) {
+  fs.readdir(src, (err, items) => {
+    if (err) return cb(err)
+    return copyDirItems(items, src, dest, opts, cb)
+  })
+}
+
+function copyDirItems (items, src, dest, opts, cb) {
+  const item = items.pop()
+  if (!item) return cb()
+  return copyDirItem(items, item, src, dest, opts, cb)
+}
+
+function copyDirItem (items, item, src, dest, opts, cb) {
+  const srcItem = path.join(src, item)
+  const destItem = path.join(dest, item)
+  runFilter(srcItem, destItem, opts, (err, include) => {
+    if (err) return cb(err)
+    if (!include) return copyDirItems(items, src, dest, opts, cb)
+
+    stat.checkPaths(srcItem, destItem, 'copy', opts, (err, stats) => {
+      if (err) return cb(err)
+      const { destStat } = stats
+      getStats(destStat, srcItem, destItem, opts, err => {
+        if (err) return cb(err)
+        return copyDirItems(items, src, dest, opts, cb)
+      })
+    })
+  })
+}
+
+function onLink (destStat, src, dest, opts, cb) {
+  fs.readlink(src, (err, resolvedSrc) => {
+    if (err) return cb(err)
+    if (opts.dereference) {
+      resolvedSrc = path.resolve(process.cwd(), resolvedSrc)
+    }
+
+    if (!destStat) {
+      return fs.symlink(resolvedSrc, dest, cb)
+    } else {
+      fs.readlink(dest, (err, resolvedDest) => {
+        if (err) {
+          // dest exists and is a regular file or directory,
+          // Windows may throw UNKNOWN error. If dest already exists,
+          // fs throws error anyway, so no need to guard against it here.
+          if (err.code === 'EINVAL' || err.code === 'UNKNOWN') return fs.symlink(resolvedSrc, dest, cb)
+          return cb(err)
+        }
+        if (opts.dereference) {
+          resolvedDest = path.resolve(process.cwd(), resolvedDest)
+        }
+        if (stat.isSrcSubdir(resolvedSrc, resolvedDest)) {
+          return cb(new Error(`Cannot copy '${resolvedSrc}' to a subdirectory of itself, '${resolvedDest}'.`))
+        }
+
+        // do not copy if src is a subdir of dest since unlinking
+        // dest in this case would result in removing src contents
+        // and therefore a broken symlink would be created.
+        if (stat.isSrcSubdir(resolvedDest, resolvedSrc)) {
+          return cb(new Error(`Cannot overwrite '${resolvedDest}' with '${resolvedSrc}'.`))
+        }
+        return copyLink(resolvedSrc, dest, cb)
+      })
+    }
+  })
+}
+
+function copyLink (resolvedSrc, dest, cb) {
+  fs.unlink(dest, err => {
+    if (err) return cb(err)
+    return fs.symlink(resolvedSrc, dest, cb)
+  })
+}
+
+module.exports = copy
+
+
+/***/ }),
+/* 18 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+const u = (__webpack_require__(6).fromPromise)
+const { makeDir: _makeDir, makeDirSync } = __webpack_require__(19)
+const makeDir = u(_makeDir)
+
+module.exports = {
+  mkdirs: makeDir,
+  mkdirsSync: makeDirSync,
+  // alias
+  mkdirp: makeDir,
+  mkdirpSync: makeDirSync,
+  ensureDir: makeDir,
+  ensureDirSync: makeDirSync
+}
+
+
+/***/ }),
+/* 19 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+const fs = __webpack_require__(5)
+const { checkPath } = __webpack_require__(20)
+
+const getMode = options => {
+  const defaults = { mode: 0o777 }
+  if (typeof options === 'number') return options
+  return ({ ...defaults, ...options }).mode
+}
+
+module.exports.makeDir = async (dir, options) => {
+  checkPath(dir)
+
+  return fs.mkdir(dir, {
+    mode: getMode(options),
+    recursive: true
+  })
+}
+
+module.exports.makeDirSync = (dir, options) => {
+  checkPath(dir)
+
+  return fs.mkdirSync(dir, {
+    mode: getMode(options),
+    recursive: true
+  })
+}
+
+
+/***/ }),
+/* 20 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+// Adapted from https://github.com/sindresorhus/make-dir
+// Copyright (c) Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com)
+// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+const path = __webpack_require__(3)
+
+// https://github.com/nodejs/node/issues/8987
+// https://github.com/libuv/libuv/pull/1088
+module.exports.checkPath = function checkPath (pth) {
+  if (process.platform === 'win32') {
+    const pathHasInvalidWinCharacters = /[<>:"|?*]/.test(pth.replace(path.parse(pth).root, ''))
+
+    if (pathHasInvalidWinCharacters) {
+      const error = new Error(`Path contains invalid characters: ${pth}`)
+      error.code = 'EINVAL'
+      throw error
+    }
+  }
+}
+
+
+/***/ }),
+/* 21 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+const u = (__webpack_require__(6).fromPromise)
+const fs = __webpack_require__(5)
+
+function pathExists (path) {
+  return fs.access(path).then(() => true).catch(() => false)
+}
+
+module.exports = {
+  pathExists: u(pathExists),
+  pathExistsSync: fs.existsSync
+}
+
+
+/***/ }),
+/* 22 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(7)
+
+function utimesMillis (path, atime, mtime, callback) {
+  // if (!HAS_MILLIS_RES) return fs.utimes(path, atime, mtime, callback)
+  fs.open(path, 'r+', (err, fd) => {
+    if (err) return callback(err)
+    fs.futimes(fd, atime, mtime, futimesErr => {
+      fs.close(fd, closeErr => {
+        if (callback) callback(futimesErr || closeErr)
+      })
+    })
+  })
+}
+
+function utimesMillisSync (path, atime, mtime) {
+  const fd = fs.openSync(path, 'r+')
+  fs.futimesSync(fd, atime, mtime)
+  return fs.closeSync(fd)
+}
+
+module.exports = {
+  utimesMillis,
+  utimesMillisSync
+}
+
+
+/***/ }),
+/* 23 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(5)
+const path = __webpack_require__(3)
+const util = __webpack_require__(14)
+
+function getStats (src, dest, opts) {
+  const statFunc = opts.dereference
+    ? (file) => fs.stat(file, { bigint: true })
+    : (file) => fs.lstat(file, { bigint: true })
+  return Promise.all([
+    statFunc(src),
+    statFunc(dest).catch(err => {
+      if (err.code === 'ENOENT') return null
+      throw err
+    })
+  ]).then(([srcStat, destStat]) => ({ srcStat, destStat }))
+}
+
+function getStatsSync (src, dest, opts) {
+  let destStat
+  const statFunc = opts.dereference
+    ? (file) => fs.statSync(file, { bigint: true })
+    : (file) => fs.lstatSync(file, { bigint: true })
+  const srcStat = statFunc(src)
+  try {
+    destStat = statFunc(dest)
+  } catch (err) {
+    if (err.code === 'ENOENT') return { srcStat, destStat: null }
+    throw err
+  }
+  return { srcStat, destStat }
+}
+
+function checkPaths (src, dest, funcName, opts, cb) {
+  util.callbackify(getStats)(src, dest, opts, (err, stats) => {
+    if (err) return cb(err)
+    const { srcStat, destStat } = stats
+
+    if (destStat) {
+      if (areIdentical(srcStat, destStat)) {
+        const srcBaseName = path.basename(src)
+        const destBaseName = path.basename(dest)
+        if (funcName === 'move' &&
+          srcBaseName !== destBaseName &&
+          srcBaseName.toLowerCase() === destBaseName.toLowerCase()) {
+          return cb(null, { srcStat, destStat, isChangingCase: true })
+        }
+        return cb(new Error('Source and destination must not be the same.'))
+      }
+      if (srcStat.isDirectory() && !destStat.isDirectory()) {
+        return cb(new Error(`Cannot overwrite non-directory '${dest}' with directory '${src}'.`))
+      }
+      if (!srcStat.isDirectory() && destStat.isDirectory()) {
+        return cb(new Error(`Cannot overwrite directory '${dest}' with non-directory '${src}'.`))
+      }
+    }
+
+    if (srcStat.isDirectory() && isSrcSubdir(src, dest)) {
+      return cb(new Error(errMsg(src, dest, funcName)))
+    }
+    return cb(null, { srcStat, destStat })
+  })
+}
+
+function checkPathsSync (src, dest, funcName, opts) {
+  const { srcStat, destStat } = getStatsSync(src, dest, opts)
+
+  if (destStat) {
+    if (areIdentical(srcStat, destStat)) {
+      const srcBaseName = path.basename(src)
+      const destBaseName = path.basename(dest)
+      if (funcName === 'move' &&
+        srcBaseName !== destBaseName &&
+        srcBaseName.toLowerCase() === destBaseName.toLowerCase()) {
+        return { srcStat, destStat, isChangingCase: true }
+      }
+      throw new Error('Source and destination must not be the same.')
+    }
+    if (srcStat.isDirectory() && !destStat.isDirectory()) {
+      throw new Error(`Cannot overwrite non-directory '${dest}' with directory '${src}'.`)
+    }
+    if (!srcStat.isDirectory() && destStat.isDirectory()) {
+      throw new Error(`Cannot overwrite directory '${dest}' with non-directory '${src}'.`)
+    }
+  }
+
+  if (srcStat.isDirectory() && isSrcSubdir(src, dest)) {
+    throw new Error(errMsg(src, dest, funcName))
+  }
+  return { srcStat, destStat }
+}
+
+// recursively check if dest parent is a subdirectory of src.
+// It works for all file types including symlinks since it
+// checks the src and dest inodes. It starts from the deepest
+// parent and stops once it reaches the src parent or the root path.
+function checkParentPaths (src, srcStat, dest, funcName, cb) {
+  const srcParent = path.resolve(path.dirname(src))
+  const destParent = path.resolve(path.dirname(dest))
+  if (destParent === srcParent || destParent === path.parse(destParent).root) return cb()
+  fs.stat(destParent, { bigint: true }, (err, destStat) => {
+    if (err) {
+      if (err.code === 'ENOENT') return cb()
+      return cb(err)
+    }
+    if (areIdentical(srcStat, destStat)) {
+      return cb(new Error(errMsg(src, dest, funcName)))
+    }
+    return checkParentPaths(src, srcStat, destParent, funcName, cb)
+  })
+}
+
+function checkParentPathsSync (src, srcStat, dest, funcName) {
+  const srcParent = path.resolve(path.dirname(src))
+  const destParent = path.resolve(path.dirname(dest))
+  if (destParent === srcParent || destParent === path.parse(destParent).root) return
+  let destStat
+  try {
+    destStat = fs.statSync(destParent, { bigint: true })
+  } catch (err) {
+    if (err.code === 'ENOENT') return
+    throw err
+  }
+  if (areIdentical(srcStat, destStat)) {
+    throw new Error(errMsg(src, dest, funcName))
+  }
+  return checkParentPathsSync(src, srcStat, destParent, funcName)
+}
+
+function areIdentical (srcStat, destStat) {
+  return destStat.ino && destStat.dev && destStat.ino === srcStat.ino && destStat.dev === srcStat.dev
+}
+
+// return true if dest is a subdir of src, otherwise false.
+// It only checks the path strings.
+function isSrcSubdir (src, dest) {
+  const srcArr = path.resolve(src).split(path.sep).filter(i => i)
+  const destArr = path.resolve(dest).split(path.sep).filter(i => i)
+  return srcArr.reduce((acc, cur, i) => acc && destArr[i] === cur, true)
+}
+
+function errMsg (src, dest, funcName) {
+  return `Cannot ${funcName} '${src}' to a subdirectory of itself, '${dest}'.`
+}
+
+module.exports = {
+  checkPaths,
+  checkPathsSync,
+  checkParentPaths,
+  checkParentPathsSync,
+  isSrcSubdir,
+  areIdentical
+}
+
+
+/***/ }),
+/* 24 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(7)
+const path = __webpack_require__(3)
+const mkdirsSync = (__webpack_require__(18).mkdirsSync)
+const utimesMillisSync = (__webpack_require__(22).utimesMillisSync)
+const stat = __webpack_require__(23)
+
+function copySync (src, dest, opts) {
+  if (typeof opts === 'function') {
+    opts = { filter: opts }
+  }
+
+  opts = opts || {}
+  opts.clobber = 'clobber' in opts ? !!opts.clobber : true // default to true for now
+  opts.overwrite = 'overwrite' in opts ? !!opts.overwrite : opts.clobber // overwrite falls back to clobber
+
+  // Warn about using preserveTimestamps on 32-bit node
+  if (opts.preserveTimestamps && process.arch === 'ia32') {
+    process.emitWarning(
+      'Using the preserveTimestamps option in 32-bit node is not recommended;\n\n' +
+      '\tsee https://github.com/jprichardson/node-fs-extra/issues/269',
+      'Warning', 'fs-extra-WARN0002'
+    )
+  }
+
+  const { srcStat, destStat } = stat.checkPathsSync(src, dest, 'copy', opts)
+  stat.checkParentPathsSync(src, srcStat, dest, 'copy')
+  if (opts.filter && !opts.filter(src, dest)) return
+  const destParent = path.dirname(dest)
+  if (!fs.existsSync(destParent)) mkdirsSync(destParent)
+  return getStats(destStat, src, dest, opts)
+}
+
+function getStats (destStat, src, dest, opts) {
+  const statSync = opts.dereference ? fs.statSync : fs.lstatSync
+  const srcStat = statSync(src)
+
+  if (srcStat.isDirectory()) return onDir(srcStat, destStat, src, dest, opts)
+  else if (srcStat.isFile() ||
+           srcStat.isCharacterDevice() ||
+           srcStat.isBlockDevice()) return onFile(srcStat, destStat, src, dest, opts)
+  else if (srcStat.isSymbolicLink()) return onLink(destStat, src, dest, opts)
+  else if (srcStat.isSocket()) throw new Error(`Cannot copy a socket file: ${src}`)
+  else if (srcStat.isFIFO()) throw new Error(`Cannot copy a FIFO pipe: ${src}`)
+  throw new Error(`Unknown file: ${src}`)
+}
+
+function onFile (srcStat, destStat, src, dest, opts) {
+  if (!destStat) return copyFile(srcStat, src, dest, opts)
+  return mayCopyFile(srcStat, src, dest, opts)
+}
+
+function mayCopyFile (srcStat, src, dest, opts) {
+  if (opts.overwrite) {
+    fs.unlinkSync(dest)
+    return copyFile(srcStat, src, dest, opts)
+  } else if (opts.errorOnExist) {
+    throw new Error(`'${dest}' already exists`)
+  }
+}
+
+function copyFile (srcStat, src, dest, opts) {
+  fs.copyFileSync(src, dest)
+  if (opts.preserveTimestamps) handleTimestamps(srcStat.mode, src, dest)
+  return setDestMode(dest, srcStat.mode)
+}
+
+function handleTimestamps (srcMode, src, dest) {
+  // Make sure the file is writable before setting the timestamp
+  // otherwise open fails with EPERM when invoked with 'r+'
+  // (through utimes call)
+  if (fileIsNotWritable(srcMode)) makeFileWritable(dest, srcMode)
+  return setDestTimestamps(src, dest)
+}
+
+function fileIsNotWritable (srcMode) {
+  return (srcMode & 0o200) === 0
+}
+
+function makeFileWritable (dest, srcMode) {
+  return setDestMode(dest, srcMode | 0o200)
+}
+
+function setDestMode (dest, srcMode) {
+  return fs.chmodSync(dest, srcMode)
+}
+
+function setDestTimestamps (src, dest) {
+  // The initial srcStat.atime cannot be trusted
+  // because it is modified by the read(2) system call
+  // (See https://nodejs.org/api/fs.html#fs_stat_time_values)
+  const updatedSrcStat = fs.statSync(src)
+  return utimesMillisSync(dest, updatedSrcStat.atime, updatedSrcStat.mtime)
+}
+
+function onDir (srcStat, destStat, src, dest, opts) {
+  if (!destStat) return mkDirAndCopy(srcStat.mode, src, dest, opts)
+  return copyDir(src, dest, opts)
+}
+
+function mkDirAndCopy (srcMode, src, dest, opts) {
+  fs.mkdirSync(dest)
+  copyDir(src, dest, opts)
+  return setDestMode(dest, srcMode)
+}
+
+function copyDir (src, dest, opts) {
+  fs.readdirSync(src).forEach(item => copyDirItem(item, src, dest, opts))
+}
+
+function copyDirItem (item, src, dest, opts) {
+  const srcItem = path.join(src, item)
+  const destItem = path.join(dest, item)
+  if (opts.filter && !opts.filter(srcItem, destItem)) return
+  const { destStat } = stat.checkPathsSync(srcItem, destItem, 'copy', opts)
+  return getStats(destStat, srcItem, destItem, opts)
+}
+
+function onLink (destStat, src, dest, opts) {
+  let resolvedSrc = fs.readlinkSync(src)
+  if (opts.dereference) {
+    resolvedSrc = path.resolve(process.cwd(), resolvedSrc)
+  }
+
+  if (!destStat) {
+    return fs.symlinkSync(resolvedSrc, dest)
+  } else {
+    let resolvedDest
+    try {
+      resolvedDest = fs.readlinkSync(dest)
+    } catch (err) {
+      // dest exists and is a regular file or directory,
+      // Windows may throw UNKNOWN error. If dest already exists,
+      // fs throws error anyway, so no need to guard against it here.
+      if (err.code === 'EINVAL' || err.code === 'UNKNOWN') return fs.symlinkSync(resolvedSrc, dest)
+      throw err
+    }
+    if (opts.dereference) {
+      resolvedDest = path.resolve(process.cwd(), resolvedDest)
+    }
+    if (stat.isSrcSubdir(resolvedSrc, resolvedDest)) {
+      throw new Error(`Cannot copy '${resolvedSrc}' to a subdirectory of itself, '${resolvedDest}'.`)
+    }
+
+    // prevent copy if src is a subdir of dest since unlinking
+    // dest in this case would result in removing src contents
+    // and therefore a broken symlink would be created.
+    if (stat.isSrcSubdir(resolvedDest, resolvedSrc)) {
+      throw new Error(`Cannot overwrite '${resolvedDest}' with '${resolvedSrc}'.`)
+    }
+    return copyLink(resolvedSrc, dest)
+  }
+}
+
+function copyLink (resolvedSrc, dest) {
+  fs.unlinkSync(dest)
+  return fs.symlinkSync(resolvedSrc, dest)
+}
+
+module.exports = copySync
+
+
+/***/ }),
+/* 25 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromPromise)
+const fs = __webpack_require__(5)
+const path = __webpack_require__(3)
+const mkdir = __webpack_require__(18)
+const remove = __webpack_require__(26)
+
+const emptyDir = u(async function emptyDir (dir) {
+  let items
+  try {
+    items = await fs.readdir(dir)
+  } catch {
+    return mkdir.mkdirs(dir)
+  }
+
+  return Promise.all(items.map(item => remove.remove(path.join(dir, item))))
+})
+
+function emptyDirSync (dir) {
+  let items
+  try {
+    items = fs.readdirSync(dir)
+  } catch {
+    return mkdir.mkdirsSync(dir)
+  }
+
+  items.forEach(item => {
+    item = path.join(dir, item)
+    remove.removeSync(item)
+  })
+}
+
+module.exports = {
+  emptyDirSync,
+  emptydirSync: emptyDirSync,
+  emptyDir,
+  emptydir: emptyDir
+}
+
+
+/***/ }),
+/* 26 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(7)
+const u = (__webpack_require__(6).fromCallback)
+
+function remove (path, callback) {
+  fs.rm(path, { recursive: true, force: true }, callback)
+}
+
+function removeSync (path) {
+  fs.rmSync(path, { recursive: true, force: true })
+}
+
+module.exports = {
+  remove: u(remove),
+  removeSync
+}
+
+
+/***/ }),
+/* 27 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const { createFile, createFileSync } = __webpack_require__(28)
+const { createLink, createLinkSync } = __webpack_require__(29)
+const { createSymlink, createSymlinkSync } = __webpack_require__(30)
+
+module.exports = {
+  // file
+  createFile,
+  createFileSync,
+  ensureFile: createFile,
+  ensureFileSync: createFileSync,
+  // link
+  createLink,
+  createLinkSync,
+  ensureLink: createLink,
+  ensureLinkSync: createLinkSync,
+  // symlink
+  createSymlink,
+  createSymlinkSync,
+  ensureSymlink: createSymlink,
+  ensureSymlinkSync: createSymlinkSync
+}
+
+
+/***/ }),
+/* 28 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromCallback)
+const path = __webpack_require__(3)
+const fs = __webpack_require__(7)
+const mkdir = __webpack_require__(18)
+
+function createFile (file, callback) {
+  function makeFile () {
+    fs.writeFile(file, '', err => {
+      if (err) return callback(err)
+      callback()
+    })
+  }
+
+  fs.stat(file, (err, stats) => { // eslint-disable-line handle-callback-err
+    if (!err && stats.isFile()) return callback()
+    const dir = path.dirname(file)
+    fs.stat(dir, (err, stats) => {
+      if (err) {
+        // if the directory doesn't exist, make it
+        if (err.code === 'ENOENT') {
+          return mkdir.mkdirs(dir, err => {
+            if (err) return callback(err)
+            makeFile()
+          })
+        }
+        return callback(err)
+      }
+
+      if (stats.isDirectory()) makeFile()
+      else {
+        // parent is not a directory
+        // This is just to cause an internal ENOTDIR error to be thrown
+        fs.readdir(dir, err => {
+          if (err) return callback(err)
+        })
+      }
+    })
+  })
+}
+
+function createFileSync (file) {
+  let stats
+  try {
+    stats = fs.statSync(file)
+  } catch {}
+  if (stats && stats.isFile()) return
+
+  const dir = path.dirname(file)
+  try {
+    if (!fs.statSync(dir).isDirectory()) {
+      // parent is not a directory
+      // This is just to cause an internal ENOTDIR error to be thrown
+      fs.readdirSync(dir)
+    }
+  } catch (err) {
+    // If the stat call above failed because the directory doesn't exist, create it
+    if (err && err.code === 'ENOENT') mkdir.mkdirsSync(dir)
+    else throw err
+  }
+
+  fs.writeFileSync(file, '')
+}
+
+module.exports = {
+  createFile: u(createFile),
+  createFileSync
+}
+
+
+/***/ }),
+/* 29 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromCallback)
+const path = __webpack_require__(3)
+const fs = __webpack_require__(7)
+const mkdir = __webpack_require__(18)
+const pathExists = (__webpack_require__(21).pathExists)
+const { areIdentical } = __webpack_require__(23)
+
+function createLink (srcpath, dstpath, callback) {
+  function makeLink (srcpath, dstpath) {
+    fs.link(srcpath, dstpath, err => {
+      if (err) return callback(err)
+      callback(null)
+    })
+  }
+
+  fs.lstat(dstpath, (_, dstStat) => {
+    fs.lstat(srcpath, (err, srcStat) => {
+      if (err) {
+        err.message = err.message.replace('lstat', 'ensureLink')
+        return callback(err)
+      }
+      if (dstStat && areIdentical(srcStat, dstStat)) return callback(null)
+
+      const dir = path.dirname(dstpath)
+      pathExists(dir, (err, dirExists) => {
+        if (err) return callback(err)
+        if (dirExists) return makeLink(srcpath, dstpath)
+        mkdir.mkdirs(dir, err => {
+          if (err) return callback(err)
+          makeLink(srcpath, dstpath)
+        })
+      })
+    })
+  })
+}
+
+function createLinkSync (srcpath, dstpath) {
+  let dstStat
+  try {
+    dstStat = fs.lstatSync(dstpath)
+  } catch {}
+
+  try {
+    const srcStat = fs.lstatSync(srcpath)
+    if (dstStat && areIdentical(srcStat, dstStat)) return
+  } catch (err) {
+    err.message = err.message.replace('lstat', 'ensureLink')
+    throw err
+  }
+
+  const dir = path.dirname(dstpath)
+  const dirExists = fs.existsSync(dir)
+  if (dirExists) return fs.linkSync(srcpath, dstpath)
+  mkdir.mkdirsSync(dir)
+
+  return fs.linkSync(srcpath, dstpath)
+}
+
+module.exports = {
+  createLink: u(createLink),
+  createLinkSync
+}
+
+
+/***/ }),
+/* 30 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromCallback)
+const path = __webpack_require__(3)
+const fs = __webpack_require__(5)
+const _mkdirs = __webpack_require__(18)
+const mkdirs = _mkdirs.mkdirs
+const mkdirsSync = _mkdirs.mkdirsSync
+
+const _symlinkPaths = __webpack_require__(31)
+const symlinkPaths = _symlinkPaths.symlinkPaths
+const symlinkPathsSync = _symlinkPaths.symlinkPathsSync
+
+const _symlinkType = __webpack_require__(32)
+const symlinkType = _symlinkType.symlinkType
+const symlinkTypeSync = _symlinkType.symlinkTypeSync
+
+const pathExists = (__webpack_require__(21).pathExists)
+
+const { areIdentical } = __webpack_require__(23)
+
+function createSymlink (srcpath, dstpath, type, callback) {
+  callback = (typeof type === 'function') ? type : callback
+  type = (typeof type === 'function') ? false : type
+
+  fs.lstat(dstpath, (err, stats) => {
+    if (!err && stats.isSymbolicLink()) {
+      Promise.all([
+        fs.stat(srcpath),
+        fs.stat(dstpath)
+      ]).then(([srcStat, dstStat]) => {
+        if (areIdentical(srcStat, dstStat)) return callback(null)
+        _createSymlink(srcpath, dstpath, type, callback)
+      })
+    } else _createSymlink(srcpath, dstpath, type, callback)
+  })
+}
+
+function _createSymlink (srcpath, dstpath, type, callback) {
+  symlinkPaths(srcpath, dstpath, (err, relative) => {
+    if (err) return callback(err)
+    srcpath = relative.toDst
+    symlinkType(relative.toCwd, type, (err, type) => {
+      if (err) return callback(err)
+      const dir = path.dirname(dstpath)
+      pathExists(dir, (err, dirExists) => {
+        if (err) return callback(err)
+        if (dirExists) return fs.symlink(srcpath, dstpath, type, callback)
+        mkdirs(dir, err => {
+          if (err) return callback(err)
+          fs.symlink(srcpath, dstpath, type, callback)
+        })
+      })
+    })
+  })
+}
+
+function createSymlinkSync (srcpath, dstpath, type) {
+  let stats
+  try {
+    stats = fs.lstatSync(dstpath)
+  } catch {}
+  if (stats && stats.isSymbolicLink()) {
+    const srcStat = fs.statSync(srcpath)
+    const dstStat = fs.statSync(dstpath)
+    if (areIdentical(srcStat, dstStat)) return
+  }
+
+  const relative = symlinkPathsSync(srcpath, dstpath)
+  srcpath = relative.toDst
+  type = symlinkTypeSync(relative.toCwd, type)
+  const dir = path.dirname(dstpath)
+  const exists = fs.existsSync(dir)
+  if (exists) return fs.symlinkSync(srcpath, dstpath, type)
+  mkdirsSync(dir)
+  return fs.symlinkSync(srcpath, dstpath, type)
+}
+
+module.exports = {
+  createSymlink: u(createSymlink),
+  createSymlinkSync
+}
+
+
+/***/ }),
+/* 31 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const path = __webpack_require__(3)
+const fs = __webpack_require__(7)
+const pathExists = (__webpack_require__(21).pathExists)
+
+/**
+ * Function that returns two types of paths, one relative to symlink, and one
+ * relative to the current working directory. Checks if path is absolute or
+ * relative. If the path is relative, this function checks if the path is
+ * relative to symlink or relative to current working directory. This is an
+ * initiative to find a smarter `srcpath` to supply when building symlinks.
+ * This allows you to determine which path to use out of one of three possible
+ * types of source paths. The first is an absolute path. This is detected by
+ * `path.isAbsolute()`. When an absolute path is provided, it is checked to
+ * see if it exists. If it does it's used, if not an error is returned
+ * (callback)/ thrown (sync). The other two options for `srcpath` are a
+ * relative url. By default Node's `fs.symlink` works by creating a symlink
+ * using `dstpath` and expects the `srcpath` to be relative to the newly
+ * created symlink. If you provide a `srcpath` that does not exist on the file
+ * system it results in a broken symlink. To minimize this, the function
+ * checks to see if the 'relative to symlink' source file exists, and if it
+ * does it will use it. If it does not, it checks if there's a file that
+ * exists that is relative to the current working directory, if does its used.
+ * This preserves the expectations of the original fs.symlink spec and adds
+ * the ability to pass in `relative to current working direcotry` paths.
+ */
+
+function symlinkPaths (srcpath, dstpath, callback) {
+  if (path.isAbsolute(srcpath)) {
+    return fs.lstat(srcpath, (err) => {
+      if (err) {
+        err.message = err.message.replace('lstat', 'ensureSymlink')
+        return callback(err)
+      }
+      return callback(null, {
+        toCwd: srcpath,
+        toDst: srcpath
+      })
+    })
+  } else {
+    const dstdir = path.dirname(dstpath)
+    const relativeToDst = path.join(dstdir, srcpath)
+    return pathExists(relativeToDst, (err, exists) => {
+      if (err) return callback(err)
+      if (exists) {
+        return callback(null, {
+          toCwd: relativeToDst,
+          toDst: srcpath
+        })
+      } else {
+        return fs.lstat(srcpath, (err) => {
+          if (err) {
+            err.message = err.message.replace('lstat', 'ensureSymlink')
+            return callback(err)
+          }
+          return callback(null, {
+            toCwd: srcpath,
+            toDst: path.relative(dstdir, srcpath)
+          })
+        })
+      }
+    })
+  }
+}
+
+function symlinkPathsSync (srcpath, dstpath) {
+  let exists
+  if (path.isAbsolute(srcpath)) {
+    exists = fs.existsSync(srcpath)
+    if (!exists) throw new Error('absolute srcpath does not exist')
+    return {
+      toCwd: srcpath,
+      toDst: srcpath
+    }
+  } else {
+    const dstdir = path.dirname(dstpath)
+    const relativeToDst = path.join(dstdir, srcpath)
+    exists = fs.existsSync(relativeToDst)
+    if (exists) {
+      return {
+        toCwd: relativeToDst,
+        toDst: srcpath
+      }
+    } else {
+      exists = fs.existsSync(srcpath)
+      if (!exists) throw new Error('relative srcpath does not exist')
+      return {
+        toCwd: srcpath,
+        toDst: path.relative(dstdir, srcpath)
+      }
+    }
+  }
+}
+
+module.exports = {
+  symlinkPaths,
+  symlinkPathsSync
+}
+
+
+/***/ }),
+/* 32 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(7)
+
+function symlinkType (srcpath, type, callback) {
+  callback = (typeof type === 'function') ? type : callback
+  type = (typeof type === 'function') ? false : type
+  if (type) return callback(null, type)
+  fs.lstat(srcpath, (err, stats) => {
+    if (err) return callback(null, 'file')
+    type = (stats && stats.isDirectory()) ? 'dir' : 'file'
+    callback(null, type)
+  })
+}
+
+function symlinkTypeSync (srcpath, type) {
+  let stats
+
+  if (type) return type
+  try {
+    stats = fs.lstatSync(srcpath)
+  } catch {
+    return 'file'
+  }
+  return (stats && stats.isDirectory()) ? 'dir' : 'file'
+}
+
+module.exports = {
+  symlinkType,
+  symlinkTypeSync
+}
+
+
+/***/ }),
+/* 33 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromPromise)
+const jsonFile = __webpack_require__(34)
+
+jsonFile.outputJson = u(__webpack_require__(37))
+jsonFile.outputJsonSync = __webpack_require__(39)
+// aliases
+jsonFile.outputJSON = jsonFile.outputJson
+jsonFile.outputJSONSync = jsonFile.outputJsonSync
+jsonFile.writeJSON = jsonFile.writeJson
+jsonFile.writeJSONSync = jsonFile.writeJsonSync
+jsonFile.readJSON = jsonFile.readJson
+jsonFile.readJSONSync = jsonFile.readJsonSync
+
+module.exports = jsonFile
+
+
+/***/ }),
+/* 34 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const jsonFile = __webpack_require__(35)
+
+module.exports = {
+  // jsonfile exports
+  readJson: jsonFile.readFile,
+  readJsonSync: jsonFile.readFileSync,
+  writeJson: jsonFile.writeFile,
+  writeJsonSync: jsonFile.writeFileSync
+}
+
+
+/***/ }),
+/* 35 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+let _fs
+try {
+  _fs = __webpack_require__(7)
+} catch (_) {
+  _fs = __webpack_require__(8)
+}
+const universalify = __webpack_require__(6)
+const { stringify, stripBom } = __webpack_require__(36)
+
+async function _readFile (file, options = {}) {
+  if (typeof options === 'string') {
+    options = { encoding: options }
+  }
+
+  const fs = options.fs || _fs
+
+  const shouldThrow = 'throws' in options ? options.throws : true
+
+  let data = await universalify.fromCallback(fs.readFile)(file, options)
+
+  data = stripBom(data)
+
+  let obj
+  try {
+    obj = JSON.parse(data, options ? options.reviver : null)
+  } catch (err) {
+    if (shouldThrow) {
+      err.message = `${file}: ${err.message}`
+      throw err
+    } else {
+      return null
+    }
+  }
+
+  return obj
+}
+
+const readFile = universalify.fromPromise(_readFile)
+
+function readFileSync (file, options = {}) {
+  if (typeof options === 'string') {
+    options = { encoding: options }
+  }
+
+  const fs = options.fs || _fs
+
+  const shouldThrow = 'throws' in options ? options.throws : true
+
+  try {
+    let content = fs.readFileSync(file, options)
+    content = stripBom(content)
+    return JSON.parse(content, options.reviver)
+  } catch (err) {
+    if (shouldThrow) {
+      err.message = `${file}: ${err.message}`
+      throw err
+    } else {
+      return null
+    }
+  }
+}
+
+async function _writeFile (file, obj, options = {}) {
+  const fs = options.fs || _fs
+
+  const str = stringify(obj, options)
+
+  await universalify.fromCallback(fs.writeFile)(file, str, options)
+}
+
+const writeFile = universalify.fromPromise(_writeFile)
+
+function writeFileSync (file, obj, options = {}) {
+  const fs = options.fs || _fs
+
+  const str = stringify(obj, options)
+  // not sure if fs.writeFileSync returns anything, but just in case
+  return fs.writeFileSync(file, str, options)
+}
+
+const jsonfile = {
+  readFile,
+  readFileSync,
+  writeFile,
+  writeFileSync
+}
+
+module.exports = jsonfile
+
+
+/***/ }),
+/* 36 */
+/***/ ((module) => {
+
+function stringify (obj, { EOL = '\n', finalEOL = true, replacer = null, spaces } = {}) {
+  const EOF = finalEOL ? EOL : ''
+  const str = JSON.stringify(obj, replacer, spaces)
+
+  return str.replace(/\n/g, EOL) + EOF
+}
+
+function stripBom (content) {
+  // we do this because JSON.parse would convert it to a utf8 string if encoding wasn't specified
+  if (Buffer.isBuffer(content)) content = content.toString('utf8')
+  return content.replace(/^\uFEFF/, '')
+}
+
+module.exports = { stringify, stripBom }
+
+
+/***/ }),
+/* 37 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const { stringify } = __webpack_require__(36)
+const { outputFile } = __webpack_require__(38)
+
+async function outputJson (file, data, options = {}) {
+  const str = stringify(data, options)
+
+  await outputFile(file, str, options)
+}
+
+module.exports = outputJson
+
+
+/***/ }),
+/* 38 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromCallback)
+const fs = __webpack_require__(7)
+const path = __webpack_require__(3)
+const mkdir = __webpack_require__(18)
+const pathExists = (__webpack_require__(21).pathExists)
+
+function outputFile (file, data, encoding, callback) {
+  if (typeof encoding === 'function') {
+    callback = encoding
+    encoding = 'utf8'
+  }
+
+  const dir = path.dirname(file)
+  pathExists(dir, (err, itDoes) => {
+    if (err) return callback(err)
+    if (itDoes) return fs.writeFile(file, data, encoding, callback)
+
+    mkdir.mkdirs(dir, err => {
+      if (err) return callback(err)
+
+      fs.writeFile(file, data, encoding, callback)
+    })
+  })
+}
+
+function outputFileSync (file, ...args) {
+  const dir = path.dirname(file)
+  if (fs.existsSync(dir)) {
+    return fs.writeFileSync(file, ...args)
+  }
+  mkdir.mkdirsSync(dir)
+  fs.writeFileSync(file, ...args)
+}
+
+module.exports = {
+  outputFile: u(outputFile),
+  outputFileSync
+}
+
+
+/***/ }),
+/* 39 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const { stringify } = __webpack_require__(36)
+const { outputFileSync } = __webpack_require__(38)
+
+function outputJsonSync (file, data, options) {
+  const str = stringify(data, options)
+
+  outputFileSync(file, str, options)
+}
+
+module.exports = outputJsonSync
+
+
+/***/ }),
+/* 40 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const u = (__webpack_require__(6).fromCallback)
+module.exports = {
+  move: u(__webpack_require__(41)),
+  moveSync: __webpack_require__(42)
+}
+
+
+/***/ }),
+/* 41 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(7)
+const path = __webpack_require__(3)
+const copy = (__webpack_require__(16).copy)
+const remove = (__webpack_require__(26).remove)
+const mkdirp = (__webpack_require__(18).mkdirp)
+const pathExists = (__webpack_require__(21).pathExists)
+const stat = __webpack_require__(23)
+
+function move (src, dest, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = {}
+  }
+
+  opts = opts || {}
+
+  const overwrite = opts.overwrite || opts.clobber || false
+
+  stat.checkPaths(src, dest, 'move', opts, (err, stats) => {
+    if (err) return cb(err)
+    const { srcStat, isChangingCase = false } = stats
+    stat.checkParentPaths(src, srcStat, dest, 'move', err => {
+      if (err) return cb(err)
+      if (isParentRoot(dest)) return doRename(src, dest, overwrite, isChangingCase, cb)
+      mkdirp(path.dirname(dest), err => {
+        if (err) return cb(err)
+        return doRename(src, dest, overwrite, isChangingCase, cb)
+      })
+    })
+  })
+}
+
+function isParentRoot (dest) {
+  const parent = path.dirname(dest)
+  const parsedPath = path.parse(parent)
+  return parsedPath.root === parent
+}
+
+function doRename (src, dest, overwrite, isChangingCase, cb) {
+  if (isChangingCase) return rename(src, dest, overwrite, cb)
+  if (overwrite) {
+    return remove(dest, err => {
+      if (err) return cb(err)
+      return rename(src, dest, overwrite, cb)
+    })
+  }
+  pathExists(dest, (err, destExists) => {
+    if (err) return cb(err)
+    if (destExists) return cb(new Error('dest already exists.'))
+    return rename(src, dest, overwrite, cb)
+  })
+}
+
+function rename (src, dest, overwrite, cb) {
+  fs.rename(src, dest, err => {
+    if (!err) return cb()
+    if (err.code !== 'EXDEV') return cb(err)
+    return moveAcrossDevice(src, dest, overwrite, cb)
+  })
+}
+
+function moveAcrossDevice (src, dest, overwrite, cb) {
+  const opts = {
+    overwrite,
+    errorOnExist: true,
+    preserveTimestamps: true
+  }
+  copy(src, dest, opts, err => {
+    if (err) return cb(err)
+    return remove(src, cb)
+  })
+}
+
+module.exports = move
+
+
+/***/ }),
+/* 42 */
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+"use strict";
+
+
+const fs = __webpack_require__(7)
+const path = __webpack_require__(3)
+const copySync = (__webpack_require__(16).copySync)
+const removeSync = (__webpack_require__(26).removeSync)
+const mkdirpSync = (__webpack_require__(18).mkdirpSync)
+const stat = __webpack_require__(23)
+
+function moveSync (src, dest, opts) {
+  opts = opts || {}
+  const overwrite = opts.overwrite || opts.clobber || false
+
+  const { srcStat, isChangingCase = false } = stat.checkPathsSync(src, dest, 'move', opts)
+  stat.checkParentPathsSync(src, srcStat, dest, 'move')
+  if (!isParentRoot(dest)) mkdirpSync(path.dirname(dest))
+  return doRename(src, dest, overwrite, isChangingCase)
+}
+
+function isParentRoot (dest) {
+  const parent = path.dirname(dest)
+  const parsedPath = path.parse(parent)
+  return parsedPath.root === parent
+}
+
+function doRename (src, dest, overwrite, isChangingCase) {
+  if (isChangingCase) return rename(src, dest, overwrite)
+  if (overwrite) {
+    removeSync(dest)
+    return rename(src, dest, overwrite)
+  }
+  if (fs.existsSync(dest)) throw new Error('dest already exists.')
+  return rename(src, dest, overwrite)
+}
+
+function rename (src, dest, overwrite) {
+  try {
+    fs.renameSync(src, dest)
+  } catch (err) {
+    if (err.code !== 'EXDEV') throw err
+    return moveAcrossDevice(src, dest, overwrite)
+  }
+}
+
+function moveAcrossDevice (src, dest, overwrite) {
+  const opts = {
+    overwrite,
+    errorOnExist: true,
+    preserveTimestamps: true
+  }
+  copySync(src, dest, opts)
+  return removeSync(src)
+}
+
+module.exports = moveSync
+
+
+/***/ }),
+/* 43 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.registerRunWebView = void 0;
+const vscode = __webpack_require__(2);
+const webviewUtils_1 = __webpack_require__(44);
+const registerRunWebView = (context) => {
+    context.subscriptions.push(vscode.commands.registerCommand("CodeToolBox.webview", () => {
+        (0, webviewUtils_1.showWebView)(context, {
+            key: "main",
+            title: "添加代码片段",
+            viewColumn: 1,
+            task: {
+                task: "route",
+                data: {
+                    path: "/add-snippets",
+                },
+            },
+        });
+    }));
+};
+exports.registerRunWebView = registerRunWebView;
+
+
+/***/ }),
+/* 44 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getHtmlForWebview = exports.showWebView = void 0;
+const vscode = __webpack_require__(2);
+const snippet = __webpack_require__(45);
+const path = __webpack_require__(3);
+// 当前的webview列表
+let webviewPanelList = [];
+// 创建webview
+const showWebView = (context, options) => {
+    // 先判断，webview是否存在了，存在了则不新增，传递消息给webview处理后续
+    const webview = webviewPanelList.find((s) => s.key === options.key);
+    if (webview) {
+        webview.panel.reveal(); // 显示webview
+        // 传递任务
+        if (options.task) {
+            webview.panel.webview.postMessage({
+                cmd: "vscodePushTask",
+                task: options.task.task,
+                data: options.task.data,
+            });
+        }
+    }
+    else {
+        const panel = vscode.window.createWebviewPanel("CodeToolBox", options.title || "CodeToolBox", {
+            viewColumn: options.viewColumn || vscode.ViewColumn.Two,
+        }, {
+            enableScripts: true,
+            retainContextWhenHidden: true, // webview被隐藏时保持状态，避免被重置
+        });
+        // 设置icon
+        panel.iconPath = vscode.Uri.file(path.join(context.extensionPath, "images", "title.jpg"));
+        panel.webview.html = (0, exports.getHtmlForWebview)(context, panel);
+        // 创建监听器，监听 webview 返回信息，
+        // 在webview中会通过 vscode.postMessage{command: 'someCommand',data: { /* 你的数据 */ },} 发送信息
+        // 创建资源管理列表
+        const disposables = [];
+        panel.webview.onDidReceiveMessage(async (message) => {
+            // 监听webview反馈回来加载完成，初始化主动推送消息
+            if (message.cmd === "webviewLoaded") {
+                if (options.task) {
+                    panel.webview.postMessage({
+                        cmd: "vscodePushTask",
+                        task: options?.task?.task,
+                        data: options?.task?.data,
+                    });
+                }
+            }
+            // 分发别的任务
+            if (taskMap[message.cmd]) {
+                // 将回调消息传递到分发任务中
+                taskMap[message.cmd](context, message);
+            }
+        }, null, disposables);
+        // 关闭时销毁
+        panel.onDidDispose(() => {
+            panel.dispose();
+            while (disposables.length) {
+                const x = disposables.pop();
+                if (x) {
+                    x.dispose();
+                }
+            }
+            // 去掉该 panel
+            webviewPanelList = webviewPanelList.filter((s) => s.key !== options.key);
+        }, null, disposables);
+        // 添加
+        webviewPanelList.push({
+            key: options.key,
+            panel,
+            disposables,
+        });
+    }
+};
+exports.showWebView = showWebView;
+// 获取 webview html
+const getHtmlForWebview = (context, panel) => {
+    const isProduction = context.extensionMode === vscode.ExtensionMode.Production;
+    let srcUrl = "";
+    if (isProduction) {
+        const mainScriptPathOnDisk = vscode.Uri.file(path.join(context.extensionPath, "webview-dist", "main.es.js"));
+        srcUrl = panel.webview.asWebviewUri(mainScriptPathOnDisk);
+    }
+    else {
+        srcUrl = "http://127.0.0.1:7979/src/main.ts";
+    }
+    return getWebviewContent(srcUrl);
+};
+exports.getHtmlForWebview = getHtmlForWebview;
+// webview html 容器
+const getWebviewContent = (srcUri) => {
+    return `<!doctype html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <title>webview-react</title>
+      <script>
+         window.vscode = acquireVsCodeApi();
+      </script>
+    </head>
+    <body>
+      <div id="app"></div>
+      <script  type="module" src="${srcUri}"></script>
+    </body>
+    </html>`;
+};
+// 人物列表，在此处分发任务
+const taskMap = {
+    addSnippets: snippet.addSnippets,
+};
+
+
+/***/ }),
+/* 45 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.addSnippets = void 0;
+const vscode = __webpack_require__(2);
+const path = __webpack_require__(3);
+const addSnippets = (context, message) => {
+    // 指定文件路径
+    const snippetFilePath = vscode.Uri.file(path.join(context.extensionPath, ".vscode", "test.code-snippets"));
+    // 创建代码片段
+    const newSnippet = {
+        [message.data.tips]: {
+            prefix: message.data?.prefix,
+            body: [message.data?.body],
+            description: message.data?.description,
+        },
+    };
+    // 将代码片段写入文件并添加到扩展程序
+    const writesnippetFilePath = async () => {
+        try {
+            let existingSnippets = {};
+            // 保证一定有该文件
+            try {
+                const folderStat = await vscode.workspace.fs.stat(snippetFilePath);
+                if (folderStat.type !== vscode.FileType.File) {
+                    await vscode.workspace.fs.writeFile(snippetFilePath, Buffer.from("", "utf8"));
+                }
+            }
+            catch (error) {
+                await vscode.workspace.fs.writeFile(snippetFilePath, Buffer.from("", "utf8"));
+            }
+            // 读取原有文件内容
+            const snippetsFileContent = await vscode.workspace.fs.readFile(snippetFilePath);
+            if (snippetsFileContent && snippetsFileContent.toString())
+                existingSnippets = JSON.parse(snippetsFileContent.toString());
+            // 如果不存在重复代码片段则拼接
+            if (!existingSnippets[newSnippet[message.data.tips].prefix]) {
+                existingSnippets = { ...existingSnippets, ...newSnippet };
+            }
+            else {
+                existingSnippets = newSnippet;
+            }
+            const updatedSnippetsContent = JSON.stringify(existingSnippets, null, 2);
+            // 写入
+            await vscode.workspace.fs.writeFile(snippetFilePath, Buffer.from(updatedSnippetsContent, "utf-8"));
+            vscode.window.showInformationMessage("代码片段添加成功!");
+        }
+        catch (error) {
+            vscode.window.showErrorMessage(`代码片段添加失败: ${error}`);
+        }
+    };
+    writesnippetFilePath();
+};
+exports.addSnippets = addSnippets;
+
+
+/***/ }),
+/* 46 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.registerCreateSnippets = void 0;
+const vscode_1 = __webpack_require__(2);
+const webviewUtils_1 = __webpack_require__(44);
+const registerCreateSnippets = (context) => {
+    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.createSnippets", async () => {
+        (0, webviewUtils_1.showWebView)(context, {
+            key: "main",
+            title: "添加代码片段",
+            viewColumn: 1,
+            task: {
+                task: "route",
+                data: {
+                    path: "/add-snippets",
+                },
+            },
+        });
+    }));
+};
+exports.registerCreateSnippets = registerCreateSnippets;
+
+
+/***/ })
+/******/ 	]);
+/************************************************************************/
+/******/ 	// The module cache
+/******/ 	var __webpack_module_cache__ = {};
+/******/ 	
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/ 		// Check if module is in cache
+/******/ 		var cachedModule = __webpack_module_cache__[moduleId];
+/******/ 		if (cachedModule !== undefined) {
+/******/ 			return cachedModule.exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = __webpack_module_cache__[moduleId] = {
+/******/ 			// no module.id needed
+/******/ 			// no module.loaded needed
+/******/ 			exports: {}
+/******/ 		};
+/******/ 	
+/******/ 		// Execute the module function
+/******/ 		__webpack_modules__[moduleId](module, module.exports, __webpack_require__);
+/******/ 	
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/ 	
+/************************************************************************/
+var __webpack_exports__ = {};
+// This entry need to be wrapped in an IIFE because it need to be in strict mode.
+(() => {
+"use strict";
+var exports = __webpack_exports__;
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.deactivate = exports.activate = void 0;
+const createScript_1 = __webpack_require__(1);
+const runWenview_1 = __webpack_require__(43);
+const createSnippets_1 = __webpack_require__(46);
+function activate(context) {
+    (0, createScript_1.registerCreateScript)(context);
+    (0, runWenview_1.registerRunWebView)(context);
+    (0, createSnippets_1.registerCreateSnippets)(context);
+}
+exports.activate = activate;
+function deactivate() { }
+exports.deactivate = deactivate;
+
+})();
+
+module.exports = __webpack_exports__;
+/******/ })()
+;
 //# sourceMappingURL=extension.js.map

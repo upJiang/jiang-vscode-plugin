@@ -1,4 +1,5 @@
 import * as vscode from "vscode";
+import * as path from "path";
 
 export const addSnippets = (
   context: vscode.ExtensionContext,
@@ -12,11 +13,10 @@ export const addSnippets = (
   },
 ) => {
   // 指定文件路径
-  const snippetFilePath = vscode.Uri.joinPath(
-    context.extensionUri,
-    ".vscode",
-    "test.code-snippets",
+  const snippetFilePath = vscode.Uri.file(
+    path.join(context.extensionPath, ".vscode", "test.code-snippets"),
   );
+
   // 创建代码片段
   const newSnippet = {
     [message.data.tips]: {
@@ -31,14 +31,35 @@ export const addSnippets = (
     try {
       let existingSnippets = {};
 
+      // 保证一定有该文件
+      try {
+        const folderStat = await vscode.workspace.fs.stat(snippetFilePath);
+
+        if (folderStat.type !== vscode.FileType.File) {
+          await vscode.workspace.fs.writeFile(
+            snippetFilePath,
+            Buffer.from("", "utf8"),
+          );
+        }
+      } catch (error) {
+        await vscode.workspace.fs.writeFile(
+          snippetFilePath,
+          Buffer.from("", "utf8"),
+        );
+      }
+
       // 读取原有文件内容
       const snippetsFileContent =
         await vscode.workspace.fs.readFile(snippetFilePath);
-      existingSnippets = JSON.parse(snippetsFileContent.toString());
+
+      if (snippetsFileContent && snippetsFileContent.toString())
+        existingSnippets = JSON.parse(snippetsFileContent.toString());
 
       // 如果不存在重复代码片段则拼接
       if (!existingSnippets[newSnippet[message.data.tips].prefix]) {
         existingSnippets = { ...existingSnippets, ...newSnippet };
+      } else {
+        existingSnippets = newSnippet;
       }
 
       const updatedSnippetsContent = JSON.stringify(existingSnippets, null, 2);
