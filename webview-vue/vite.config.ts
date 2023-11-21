@@ -37,14 +37,4 @@ export default defineConfig({
     },
     outDir: '../webview-dist',
   },
-  // // 打包配置
-  // build: {
-  //   rollupOptions: {
-  //     output: {
-  //       manualChunks: undefined,
-  //     },
-  //   },
-  //   // },
-  //   outDir: '../webview-dist',
-  // },
 })

@@ -154,7 +154,7 @@ const getWebviewContent = (srcUri: string | vscode.Uri) => {
     </html>`;
 };
 
-// 人物列表，在此处分发任务
+// 任务列表，在此处分发任务
 const taskMap: Record<string, any> = {
   addSnippets: snippet.addSnippets,
 };

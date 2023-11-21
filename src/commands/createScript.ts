@@ -7,7 +7,7 @@ export const registerCreateScript = (context: ExtensionContext) => {
   context.subscriptions.push(
     commands.registerCommand("CodeToolBox.createScript", async (args) => {
       const rootPath = vscode.workspace.rootPath || ""; // 获取当前右键文件夹位置作为目标源
-      // 规定复制源位置
+      // 指定复制源位置
       const sourceFolderPath = path.join(rootPath, "materials", "blocks");
       const targetFolderPath = args._fsPath;
 

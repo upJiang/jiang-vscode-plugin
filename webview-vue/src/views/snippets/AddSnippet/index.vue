@@ -22,12 +22,13 @@
       ></a-input>
     </a-form-item>
     <a-form-item label="内容" v-bind="presenter.validateInfos.body">
-      <a-input
+      <a-textarea
         v-model:value="model.formState.body"
         placeholder="请输入"
         allow-clear
+        :rows="3"
         style="width: 250px"
-      ></a-input>
+      ></a-textarea>
     </a-form-item>
     <a-form-item label="描述" v-bind="presenter.validateInfos.description">
       <a-input

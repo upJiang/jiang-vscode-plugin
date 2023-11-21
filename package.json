@@ -16,10 +16,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "CodeToolBox.webview",
-        "title": "打开webview"
-      },
-      {
         "command": "CodeToolBox.createScript",
         "title": "创建区块"
       },
@@ -61,12 +57,6 @@
         "id": "CodeToolBox/editor/context",
         "label": "CodeToolBox",
         "icon": "$(octoface)"
-      }
-    ],
-    "snippets": [
-      {
-        "language": "javascript",
-        "path": "./snippets/snippets.json"
       }
     ]
   },

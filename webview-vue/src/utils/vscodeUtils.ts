@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-
 import router from '@/router'
 
 const callbacks: { [propName: string]: (data: any) => void } = {}
