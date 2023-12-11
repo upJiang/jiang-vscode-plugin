@@ -2881,7 +2881,34 @@ module.exports = moveSync
 
 
 /***/ }),
-/* 43 */,
+/* 43 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.registerCreateSnippets = void 0;
+const vscode_1 = __webpack_require__(2);
+const webviewUtils_1 = __webpack_require__(44);
+const registerCreateSnippets = (context) => {
+    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.createSnippets", async () => {
+        (0, webviewUtils_1.showWebView)(context, {
+            key: "main",
+            title: "添加代码片段",
+            viewColumn: 1,
+            task: {
+                task: "route",
+                data: {
+                    path: "/add-snippets",
+                },
+            },
+        });
+    }));
+};
+exports.registerCreateSnippets = registerCreateSnippets;
+
+
+/***/ }),
 /* 44 */
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -3069,15 +3096,15 @@ exports.addSnippets = addSnippets;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.registerCreateSnippets = void 0;
+exports.registerCreateSetting = void 0;
 const vscode_1 = __webpack_require__(2);
 const webviewUtils_1 = __webpack_require__(44);
-const registerCreateSnippets = (context) => {
-    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.createSnippets", async () => {
+const registerCreateSetting = (context) => {
+    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.openSetting", async () => {
         (0, webviewUtils_1.showWebView)(context, {
             key: "main",
-            title: "添加代码片段",
-            viewColumn: 1,
+            title: "设置",
+            viewColumn: vscode_1.ViewColumn.One,
             task: {
                 task: "route",
                 data: {
@@ -3087,7 +3114,7 @@ const registerCreateSnippets = (context) => {
         });
     }));
 };
-exports.registerCreateSnippets = registerCreateSnippets;
+exports.registerCreateSetting = registerCreateSetting;
 
 
 /***/ })
@@ -3127,10 +3154,12 @@ var exports = __webpack_exports__;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.deactivate = exports.activate = void 0;
 const createScript_1 = __webpack_require__(1);
-const createSnippets_1 = __webpack_require__(46);
+const createSnippets_1 = __webpack_require__(43);
+const createSetting_1 = __webpack_require__(46);
 function activate(context) {
     (0, createScript_1.registerCreateScript)(context);
     (0, createSnippets_1.registerCreateSnippets)(context);
+    (0, createSetting_1.registerCreateSetting)(context);
 }
 exports.activate = activate;
 function deactivate() { }

@@ -21,7 +21,7 @@ export const showWebView = (
   options: {
     key: WebViewKeys; // webview key
     title?: string; // webview 标题
-    viewColumn?: vscode.ViewColumn; // 视图数量
+    viewColumn?: vscode.ViewColumn; // one 为左侧，two为右侧
     task?: { task: Tasks; data?: any }; // webview 打开后执行命令，比如转到指定路由
   },
 ) => {

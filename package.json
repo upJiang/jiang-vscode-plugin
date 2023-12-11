@@ -14,6 +14,30 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "CodeToolBox",
+          "title": "CodeToolBox",
+          "icon": "images/tool.png"
+        }
+      ]
+    },
+    "views": {
+      "CodeToolBox": [
+        {
+          "id": "CodeToolBox.welcome",
+          "name": "welcome",
+          "icon": "images/tool.png"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "CodeToolBox.welcome",
+        "contents": "[设置](command:CodeToolBox.openSetting)"
+      }
+    ],
     "commands": [
       {
         "command": "CodeToolBox.createScript",
@@ -22,6 +46,10 @@
       {
         "command": "CodeToolBox.createSnippets",
         "title": "创建代码片段"
+      },
+      {
+        "command": "CodeToolBox.openSetting",
+        "title": "设置"
       }
     ],
     "menus": {
