@@ -1,29 +1,44 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "module": "esnext",
-    "strict": true,
-    "jsx": "preserve",
-    "importHelpers": true,
     "moduleResolution": "node",
-    "allowJs": true,
-    "esModuleInterop": true,
+    "useDefineForClassFields": true,
+    "strict": true,
+    "noLib": false,
+    "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
-    "sourceMap": true,
+    "strictFunctionTypes": false,
+    "jsx": "preserve",
     "baseUrl": ".",
+    "allowJs": true,
+    "sourceMap": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "experimentalDecorators": true,
+    "lib": ["dom", "esnext"],
+    "noImplicitAny": false,
+    "skipLibCheck": true,
+    "types": [],
+    "removeComments": true,
     "paths": {
-      "@/*": ["src/*"]
-    },
-    "noImplicitAny": false, // 允许使用 any 类型
-    "lib": ["esnext", "dom", "dom.iterable", "scripthost"]
+      "@/*": ["src/*"],
+      "/#/*": ["types/*"]
+    }
   },
   "include": [
     "src/**/*.ts",
+    "src/**/*.d.ts",
     "src/**/*.tsx",
     "src/**/*.vue",
-    "tests/**/*.ts",
-    "tests/**/*.tsx",
-    "typings.d.ts"
+    "types/**/*.d.ts",
+    "types/**/*.ts",
+    "build/**/*.ts",
+    "build/**/*.d.ts",
+    "mock/**/*.ts",
+    "vite.config.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "tests/server/**/*.ts", "dist", "**/*.js"]
 }

@@ -14,6 +14,34 @@
   "activationEvents": [],
   "main": "./dist/extension.js",
   "contributes": {
+    "commands": [
+      {
+        "command": "CodeToolBox.createScript",
+        "title": "创建区块"
+      },
+      {
+        "command": "CodeToolBox.createSnippets",
+        "title": "创建代码片段"
+      },
+      {
+        "command": "CodeToolBox.openSetting",
+        "title": "设置",
+        "icon": "$(gear)"
+      },
+      {
+        "command": "CodeToolBox.explainByChatGPT",
+        "title": "解释这段文案"
+      },
+      {
+        "command": "CodeToolBox.chatGPTView",
+        "title": "chatGPT对话框"
+      },
+      {
+        "command": "CodeToolBox.hideChatGPTView",
+        "title": "关闭chatGPT对话框",
+        "icon": "$(close)"
+      }
+    ],
     "viewsContainers": {
       "activitybar": [
         {
@@ -28,28 +56,20 @@
         {
           "id": "CodeToolBox.welcome",
           "name": "welcome",
-          "icon": "images/tool.png"
+          "when": "!CodeToolBox.chatGPTView"
+        },
+        {
+          "type": "webview",
+          "id": "CodeToolBox.chatGPTView",
+          "name": "chatGPT",
+          "when": "CodeToolBox.chatGPTView"
         }
       ]
     },
     "viewsWelcome": [
       {
         "view": "CodeToolBox.welcome",
-        "contents": "[设置](command:CodeToolBox.openSetting)"
-      }
-    ],
-    "commands": [
-      {
-        "command": "CodeToolBox.createScript",
-        "title": "创建区块"
-      },
-      {
-        "command": "CodeToolBox.createSnippets",
-        "title": "创建代码片段"
-      },
-      {
-        "command": "CodeToolBox.openSetting",
-        "title": "设置"
+        "contents": "[打开chatGPT对话框](command:CodeToolBox.chatGPTView)\n[设置](command:CodeToolBox.openSetting)"
       }
     ],
     "menus": {
@@ -72,6 +92,21 @@
       "CodeToolBox/editor/context": [
         {
           "command": "CodeToolBox.createSnippets"
+        },
+        {
+          "command": "CodeToolBox.explainByChatGPT"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "CodeToolBox.hideChatGPTView",
+          "when": "view == CodeToolBox.chatGPTView",
+          "group": "navigation@4"
+        },
+        {
+          "command": "CodeToolBox.openSetting",
+          "when": "view == CodeToolBox.chatGPTView",
+          "group": "navigation@3"
         }
       ]
     },
@@ -86,7 +121,23 @@
         "label": "CodeToolBox",
         "icon": "$(octoface)"
       }
-    ]
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "CodeToolBox",
+      "properties": {
+        "CodeToolBox.hostname": {
+          "type": "string",
+          "default": "",
+          "description": "第三方代理地址"
+        },
+        "CodeToolBox.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "第三方代理提供的apiKey"
+        }
+      }
+    }
   },
   "repository": "https://github.com/upJiang/jiang-vscode-plugin",
   "scripts": {

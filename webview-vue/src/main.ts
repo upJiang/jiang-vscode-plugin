@@ -1,17 +1,20 @@
-import { createApp } from 'vue'
-import router from './router'
-import Antd from 'ant-design-vue'
-import App from './App.vue'
+import Antd from "ant-design-vue";
+import { createApp } from "vue";
 
-import { initMessageListener } from '@/utils/vscodeUtils'
+import { initMessageListener } from "@/utils/vscodeUtils";
 
-const app = createApp(App)
+import App from "./App.vue";
+import router from "./router";
 
-app.use(router)
-app.use(Antd)
-app.mount('#app')
+const app = createApp(App);
 
-initMessageListener() // 执行监听
+app.use(router);
+app.use(Antd);
+app.mount("#app");
+
+initMessageListener(); // 执行监听
 
 // 初始化完毕，通知 vscode 已经加载完了
-vscode.postMessage({ cmd: 'webviewLoaded' })
+if (window.vscode) {
+  vscode.postMessage({ cmd: "webviewLoaded" });
+}

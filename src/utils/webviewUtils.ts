@@ -54,7 +54,7 @@ export const showWebView = (
     panel.iconPath = vscode.Uri.file(
       path.join(context.extensionPath, "images", "title.jpg"),
     );
-    panel.webview.html = getHtmlForWebview(context, panel);
+    panel.webview.html = getHtmlForWebview(context, panel.webview);
 
     // 创建监听器，监听 webview 返回信息，
     // 在webview中会通过 vscode.postMessage{command: 'someCommand',data: { /* 你的数据 */ },} 发送信息
@@ -117,7 +117,7 @@ export const showWebView = (
 // 获取 webview html
 export const getHtmlForWebview = (
   context: vscode.ExtensionContext,
-  panel: vscode.WebviewPanel,
+  webview: vscode.Webview,
 ) => {
   const isProduction =
     context.extensionMode === vscode.ExtensionMode.Production;
@@ -126,7 +126,7 @@ export const getHtmlForWebview = (
     const mainScriptPathOnDisk = vscode.Uri.file(
       path.join(context.extensionPath, "webview-dist", "main.es.js"),
     );
-    srcUrl = panel.webview.asWebviewUri(mainScriptPathOnDisk);
+    srcUrl = webview.asWebviewUri(mainScriptPathOnDisk);
   } else {
     srcUrl = "http://127.0.0.1:7979/src/main.ts";
   }
@@ -140,8 +140,7 @@ const getWebviewContent = (srcUri: string | vscode.Uri) => {
     <html lang="en">
     <head>
       <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
       <title>webview-react</title>
       <script>
          window.vscode = acquireVsCodeApi();

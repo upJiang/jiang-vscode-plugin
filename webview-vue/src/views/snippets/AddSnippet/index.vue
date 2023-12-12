@@ -11,7 +11,7 @@
         placeholder="请输入"
         allow-clear
         style="width: 250px"
-      ></a-input>
+      />
     </a-form-item>
     <a-form-item label="前缀" v-bind="presenter.validateInfos.prefix">
       <a-input
@@ -19,7 +19,7 @@
         placeholder="请输入"
         allow-clear
         style="width: 250px"
-      ></a-input>
+      />
     </a-form-item>
     <a-form-item label="内容" v-bind="presenter.validateInfos.body">
       <a-textarea
@@ -28,7 +28,7 @@
         allow-clear
         :rows="3"
         style="width: 250px"
-      ></a-textarea>
+      />
     </a-form-item>
     <a-form-item label="描述" v-bind="presenter.validateInfos.description">
       <a-input
@@ -36,17 +36,17 @@
         placeholder="请输入"
         allow-clear
         style="width: 250px"
-      ></a-input>
+      />
     </a-form-item>
     <a-button @click="presenter.handleOnSubmit" type="primary">提交</a-button>
   </a-form>
 </template>
 <script lang="ts" setup>
-import { usePresenter } from './presenter'
+import { usePresenter } from "./presenter";
 
-const presenter = usePresenter()
-const { model } = presenter
+const presenter = usePresenter();
+const { model } = presenter;
 </script>
 <style scoped lang="scss">
-@import url('./index.scss');
+@import url("./index.scss");
 </style>

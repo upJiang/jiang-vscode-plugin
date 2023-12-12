@@ -1,18 +1,20 @@
-import { Model } from './model'
-import { callVscode } from '@/utils/vscodeUtils'
+import { callVscode } from "@/utils/vscodeUtils";
+
+import { Model } from "./model";
+
 export default class Service {
-  private model: Model
+  private model: Model;
 
   constructor(model: Model) {
-    this.model = model
+    this.model = model;
   }
 
   onSubmit() {
     callVscode({
-      cmd: 'addSnippets',
+      cmd: "addSnippets",
       data: {
         ...this.model.formState,
       },
-    })
+    });
   }
 }

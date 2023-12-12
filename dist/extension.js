@@ -2945,7 +2945,7 @@ const showWebView = (context, options) => {
         });
         // 设置icon
         panel.iconPath = vscode.Uri.file(path.join(context.extensionPath, "images", "title.jpg"));
-        panel.webview.html = (0, exports.getHtmlForWebview)(context, panel);
+        panel.webview.html = (0, exports.getHtmlForWebview)(context, panel.webview);
         // 创建监听器，监听 webview 返回信息，
         // 在webview中会通过 vscode.postMessage{command: 'someCommand',data: { /* 你的数据 */ },} 发送信息
         // 创建资源管理列表
@@ -2989,12 +2989,12 @@ const showWebView = (context, options) => {
 };
 exports.showWebView = showWebView;
 // 获取 webview html
-const getHtmlForWebview = (context, panel) => {
+const getHtmlForWebview = (context, webview) => {
     const isProduction = context.extensionMode === vscode.ExtensionMode.Production;
     let srcUrl = "";
     if (isProduction) {
         const mainScriptPathOnDisk = vscode.Uri.file(path.join(context.extensionPath, "webview-dist", "main.es.js"));
-        srcUrl = panel.webview.asWebviewUri(mainScriptPathOnDisk);
+        srcUrl = webview.asWebviewUri(mainScriptPathOnDisk);
     }
     else {
         srcUrl = "http://127.0.0.1:7979/src/main.ts";
@@ -3008,8 +3008,7 @@ const getWebviewContent = (srcUri) => {
     <html lang="en">
     <head>
       <meta charset="UTF-8">
-      <meta http-equiv="X-UA-Compatible" content="IE=edge">
-      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
       <title>webview-react</title>
       <script>
          window.vscode = acquireVsCodeApi();
@@ -3098,23 +3097,145 @@ exports.addSnippets = addSnippets;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.registerCreateSetting = void 0;
 const vscode_1 = __webpack_require__(2);
-const webviewUtils_1 = __webpack_require__(44);
 const registerCreateSetting = (context) => {
-    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.openSetting", async () => {
-        (0, webviewUtils_1.showWebView)(context, {
-            key: "main",
-            title: "设置",
-            viewColumn: vscode_1.ViewColumn.One,
-            task: {
-                task: "route",
-                data: {
-                    path: "/add-snippets",
-                },
-            },
-        });
+    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.openSetting", () => {
+        // 打开插件设置
+        vscode_1.commands.executeCommand("workbench.action.openSettings", "CodeToolBox");
     }));
 };
 exports.registerCreateSetting = registerCreateSetting;
+
+
+/***/ }),
+/* 47 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.registerCreateExplainByChatGPT = void 0;
+const vscode_1 = __webpack_require__(2);
+const registerCreateExplainByChatGPT = (context) => {
+    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.explainByChatGPT", () => {
+        // 获取当前活动的文本编辑器
+        const editor = vscode_1.window.activeTextEditor;
+        if (editor) {
+            // 获取用户选中的文本
+            const selectedText = editor.document.getText(editor.selection);
+            if (!selectedText) {
+                vscode_1.window.showInformationMessage("没有选中的文本");
+                return;
+            }
+            // 打印选中的文本（你可以根据需求进行其他操作）
+            console.log("Selected text:", selectedText);
+            // 获取本插件的设置
+            const config = vscode_1.workspace.getConfiguration("CodeToolBox");
+            const hostname = config.get("hostname");
+            const apiKey = config.get("apiKey");
+            console.log("设置的hostname:", hostname);
+            console.log("设置的apiKey:", apiKey);
+            if (!hostname) {
+                vscode_1.window.showInformationMessage("请先设置插件 CodeToolBox 的 hostname，点击左侧标签栏 CodeToolBox 的图标进行设置");
+                return;
+            }
+            if (!apiKey) {
+                vscode_1.window.showInformationMessage("请先设置插件 CodeToolBox 的 apiKey，点击左侧标签栏 CodeToolBox 的图标进行设置");
+                return;
+            }
+            // 打开左侧的 chatGPT 对话框
+        }
+        else {
+            vscode_1.window.showInformationMessage("没有活动的文本编辑器");
+        }
+    }));
+};
+exports.registerCreateExplainByChatGPT = registerCreateExplainByChatGPT;
+
+
+/***/ }),
+/* 48 */
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.registerCreateChatGPTView = void 0;
+const vscode_1 = __webpack_require__(2);
+const webviewUtils_1 = __webpack_require__(44);
+// 实现 Webview 视图提供者接口，以下内容都是 chatGPT 提供
+class MyWebviewViewProvider {
+    constructor(context) {
+        this.context = context;
+        this.context = context;
+    }
+    resolveWebviewView(webviewView) {
+        this.webview = webviewView.webview;
+        // 设置 enableScripts 选项为 true
+        webviewView.webview.options = {
+            enableScripts: true,
+        };
+        // 设置 Webview 的内容
+        webviewView.webview.html = (0, webviewUtils_1.getHtmlForWebview)(this.context, webviewView.webview);
+        webviewView.webview.onDidReceiveMessage((message) => {
+            // 监听webview反馈回来加载完成，初始化主动推送消息
+            if (message.cmd === "webviewLoaded") {
+                // 获取本插件的设置
+                const config = vscode_1.workspace.getConfiguration("CodeToolBox");
+                const hostname = config.get("hostname");
+                const apiKey = config.get("apiKey");
+                console.log("设置的hostname:", hostname);
+                console.log("设置的apiKey:", apiKey);
+                webviewView.webview.postMessage({
+                    cmd: "vscodePushTask",
+                    task: "route",
+                    data: {
+                        path: "/chat-gpt-view",
+                        query: {
+                            hostname,
+                            apiKey,
+                        },
+                    },
+                });
+            }
+        });
+    }
+    // 销毁
+    removeWebView() {
+        if (this.webview) {
+            this.webview = undefined;
+        }
+    }
+}
+let webviewViewProvider;
+const registerCreateChatGPTView = (context) => {
+    context.subscriptions.push(vscode_1.commands.registerCommand("CodeToolBox.chatGPTView", () => {
+        vscode_1.commands
+            .executeCommand("workbench.view.extension.CodeToolBox")
+            .then(() => {
+            // 设置 CodeToolBox.chatGPTView 为true，这样才能显示，"when": "CodeToolBox.chatGPTView"
+            vscode_1.commands
+                .executeCommand("setContext", "CodeToolBox.chatGPTView", true)
+                .then(() => {
+                // 注册 webview 视图
+                webviewViewProvider = new MyWebviewViewProvider(context);
+                context.subscriptions.push(vscode_1.window.registerWebviewViewProvider("CodeToolBox.chatGPTView", webviewViewProvider, {
+                    webviewOptions: {
+                        retainContextWhenHidden: true,
+                    },
+                }));
+            });
+        });
+    }), 
+    // 关闭
+    vscode_1.commands.registerCommand("CodeToolBox.hideChatGPTView", () => {
+        vscode_1.commands
+            .executeCommand("setContext", "CodeToolBox.chatGPTView", false)
+            .then(() => {
+            webviewViewProvider?.removeWebView();
+        });
+    }));
+};
+exports.registerCreateChatGPTView = registerCreateChatGPTView;
 
 
 /***/ })
@@ -3156,10 +3277,14 @@ exports.deactivate = exports.activate = void 0;
 const createScript_1 = __webpack_require__(1);
 const createSnippets_1 = __webpack_require__(43);
 const createSetting_1 = __webpack_require__(46);
+const createExplainByChatGPT_1 = __webpack_require__(47);
+const createChatGPTView_1 = __webpack_require__(48);
 function activate(context) {
     (0, createScript_1.registerCreateScript)(context);
     (0, createSnippets_1.registerCreateSnippets)(context);
     (0, createSetting_1.registerCreateSetting)(context);
+    (0, createExplainByChatGPT_1.registerCreateExplainByChatGPT)(context);
+    (0, createChatGPTView_1.registerCreateChatGPTView)(context);
 }
 exports.activate = activate;
 function deactivate() { }
