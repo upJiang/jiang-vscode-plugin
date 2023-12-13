@@ -1,18 +1,14 @@
-import { createRouter, createWebHashHistory } from "vue-router";
+import { createRouter, createWebHashHistory, RouteRecordRaw } from "vue-router";
 
-const moduleList = import.meta.globEager("./modules/**");
+const modules = import.meta.glob("./modules/**", {
+  eager: true,
+}) as Record<string, { default: RouteRecordRaw[] }>;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-let routes = Object.keys(moduleList).reduce<any[]>(
-  (pre, k) => [...pre, ...moduleList[k].default],
-  [],
-);
-// 去重
-routes = Array.from(new Set(routes));
+const routes = Object.keys(modules).map((s) => modules[s].default);
 
 const router = createRouter({
   history: createWebHashHistory(),
-  routes,
+  routes: routes.flat(),
 });
 
 export default router;

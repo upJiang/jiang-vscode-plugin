@@ -1,23 +1,21 @@
 <template>
   <div class="chat-container">
-    <div class="messages-container">
+    <div class="messages-container" ref="scrollContainer">
+      <div class="empty-item"></div>
       <div
-        v-for="(message, index) in model.messages.value"
-        :key="index"
-        :class="[message.type, 'message-item']"
+        :class="['message-item', item.role]"
+        v-for="item in model.messageList.value"
+        :key="item.content"
       >
-        <template v-if="message.type === 'user'">
-          <span>
-            {{ message.text }}
-          </span>
-          <img class="avatar user" src="https://junfeng530.xyz/user.png" />
-        </template>
-        <template v-if="message.type === 'robot'">
-          <img class="avatar robot" src="https://junfeng530.xyz/robot.png" />
-          <span>
-            {{ message.text }}
-          </span>
-        </template>
+        <span>
+          {{ item.content }}
+        </span>
+        <span class="time">{{ item.time }}</span>
+      </div>
+      <div class="loading-container" v-if="model.loading.value">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
       </div>
     </div>
     <div class="input-container">
@@ -25,23 +23,48 @@
         v-model:value.trim="model.userInput.value"
         class="user-input"
         placeholder="请输入您的问题"
+        @keyup.enter="presenter.sendMessageEnter"
       />
-      <a-button
-        style="background-color: #4caf50"
-        @click="presenter.sendMessage"
-        type="primary"
-      >
-        发送
-      </a-button>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
+import { nextTick, ref, watch } from "vue";
+
 import { usePresenter } from "./presenter";
 
 const presenter = usePresenter();
 const { model } = presenter;
+
+const scrollContainer = ref();
+
+watch(
+  () => [model.messageList.value, model.loading.value],
+  () => {
+    nextTick(() => {
+      scrollContainer.value.scrollTop = scrollContainer.value.scrollHeight;
+    });
+  },
+  {
+    deep: true,
+  },
+);
 </script>
 <style scoped lang="scss">
+@import url("./index.scss");
+</style>
+<style>
+.dot {
+  width: 12px;
+  height: 12px;
+  margin: 0 5px;
+
+  opacity: 0;
+  background-color: #fff;
+  border-radius: 50%;
+
+  animation: fadeIn 1.6s forwards infinite;
+}
+
 @import url("./index.scss");
 </style>

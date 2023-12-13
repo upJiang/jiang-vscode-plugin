@@ -1,14 +1,13 @@
 import { fileURLToPath, URL } from "node:url";
 
 import vue from "@vitejs/plugin-vue";
-import vueJsx from "@vitejs/plugin-vue-jsx";
 import path from "path";
 import { defineConfig } from "vite";
 import cssInjectedByJsPlugin from "vite-plugin-css-injected-by-js";
 // https://juejin.cn/post/7277804250024902693 打包配置参考
 export default defineConfig({
   base: "./",
-  plugins: [vue(), vueJsx(), cssInjectedByJsPlugin()],
+  plugins: [vue(), cssInjectedByJsPlugin()],
   // 配置别名
   resolve: {
     alias: {
@@ -24,6 +23,7 @@ export default defineConfig({
     lib: {
       entry: path.resolve(__dirname, "./src/main.ts"), // 设置入口文件【这里也可以直接引用插件.vue根组件】
       name: "main", // 起个名字，安装、引入用
+      formats: ["es"],
       fileName: `main`, // 打包后的文件名【可以自定义】
     },
     sourcemap: false, // 输出.map文件
@@ -41,3 +41,4 @@ export default defineConfig({
     outDir: "../webview-dist",
   },
 });
+// && yarn --cwd \"webview-vue\" build

@@ -13,7 +13,13 @@ interface IFetchChatGPTQuestionResult {
 interface IFetchChatGPTQuestionParams {
   houseName: string;
   apiKey: string;
-  question: string;
+  messages: Message[];
+}
+
+export interface Message {
+  content: string;
+  role: "user" | "system";
+  time: string;
 }
 // POST 请求示例
 export function fetchChatGPTQuestion(data: IFetchChatGPTQuestionParams) {
@@ -22,12 +28,7 @@ export function fetchChatGPTQuestion(data: IFetchChatGPTQuestionParams) {
     method: "POST",
     data: {
       model: "gpt-3.5-turbo-0301",
-      messages: [
-        {
-          role: "user",
-          content: data.question,
-        },
-      ],
+      messages: data.messages,
     },
     headers: {
       Authorization: `Bearer ${data.apiKey}`,

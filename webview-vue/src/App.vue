@@ -5,7 +5,7 @@
 <style lang="less">
 #app {
   height: 100vh;
-  background: #fff;
+  background-color: #181818;
 }
 body {
   margin: 0;

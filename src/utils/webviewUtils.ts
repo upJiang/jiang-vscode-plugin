@@ -124,7 +124,7 @@ export const getHtmlForWebview = (
   let srcUrl: string | vscode.Uri = "";
   if (isProduction) {
     const mainScriptPathOnDisk = vscode.Uri.file(
-      path.join(context.extensionPath, "webview-dist", "main.es.js"),
+      path.join(context.extensionPath, "webview-dist", "main.mjs"),
     );
     srcUrl = webview.asWebviewUri(mainScriptPathOnDisk);
   } else {
@@ -144,6 +144,11 @@ const getWebviewContent = (srcUri: string | vscode.Uri) => {
       <title>webview-react</title>
       <script>
          window.vscode = acquireVsCodeApi();
+         window.process = {
+           env: {
+             NODE_ENV: "production",
+           },
+         }
       </script>
     </head>
     <body>

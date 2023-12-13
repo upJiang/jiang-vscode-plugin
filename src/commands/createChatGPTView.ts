@@ -8,9 +8,13 @@ import {
 } from "vscode";
 import { getHtmlForWebview } from "../utils/webviewUtils";
 
+// 创建一个 webview 视图
+let webviewViewProvider: MyWebviewViewProvider | undefined;
+
 // 实现 Webview 视图提供者接口，以下内容都是 chatGPT 提供
 class MyWebviewViewProvider implements WebviewViewProvider {
   public webview?: WebviewView["webview"];
+
   constructor(private context: ExtensionContext) {
     this.context = context;
   }
@@ -35,23 +39,7 @@ class MyWebviewViewProvider implements WebviewViewProvider {
       }) => {
         // 监听webview反馈回来加载完成，初始化主动推送消息
         if (message.cmd === "webviewLoaded") {
-          // 获取本插件的设置
-          const config = workspace.getConfiguration("CodeToolBox");
-          const hostname = config.get("hostname");
-          const apiKey = config.get("apiKey");
-          console.log("设置的hostname:", hostname);
-          console.log("设置的apiKey:", apiKey);
-          webviewView.webview.postMessage({
-            cmd: "vscodePushTask",
-            task: "route",
-            data: {
-              path: "/chat-gpt-view",
-              query: {
-                hostname,
-                apiKey,
-              },
-            },
-          });
+          console.log("反馈消息:", message);
         }
       },
     );
@@ -59,47 +47,106 @@ class MyWebviewViewProvider implements WebviewViewProvider {
 
   // 销毁
   removeWebView() {
-    if (this.webview) {
-      this.webview = undefined;
-    }
+    this.webview = undefined;
   }
 }
 
-let webviewViewProvider: MyWebviewViewProvider | undefined;
+const openChatGPTView = (selectedText?: string) => {
+  // 唤醒 chatGPT 视图
+  commands.executeCommand("workbench.view.extension.CodeToolBox").then(() => {
+    commands
+      .executeCommand("setContext", "CodeToolBox.chatGPTView", true)
+      .then(() => {
+        const config = workspace.getConfiguration("CodeToolBox");
+        const hostname = config.get("hostname");
+        const apiKey = config.get("apiKey");
+
+        setTimeout(() => {
+          // 发送任务,并传递参数
+          if (!webviewViewProvider || !webviewViewProvider?.webview) {
+            return;
+          }
+          webviewViewProvider.webview.postMessage({
+            cmd: "vscodePushTask",
+            task: "route",
+            data: {
+              path: "/chat-gpt-view",
+              query: {
+                hostname,
+                apiKey,
+                selectedText,
+              },
+            },
+          });
+        }, 500);
+      });
+  });
+};
+
 export const registerCreateChatGPTView = (context: ExtensionContext) => {
+  // 注册 webview 视图
+  webviewViewProvider = new MyWebviewViewProvider(context);
   context.subscriptions.push(
-    commands.registerCommand("CodeToolBox.chatGPTView", () => {
-      commands
-        .executeCommand("workbench.view.extension.CodeToolBox")
-        .then(() => {
-          // 设置 CodeToolBox.chatGPTView 为true，这样才能显示，"when": "CodeToolBox.chatGPTView"
-          commands
-            .executeCommand("setContext", "CodeToolBox.chatGPTView", true)
-            .then(() => {
-              // 注册 webview 视图
-              webviewViewProvider = new MyWebviewViewProvider(context);
-              context.subscriptions.push(
-                window.registerWebviewViewProvider(
-                  "CodeToolBox.chatGPTView",
-                  webviewViewProvider,
-                  {
-                    webviewOptions: {
-                      retainContextWhenHidden: true,
-                    },
-                  },
-                ),
-              );
-            });
-        });
+    window.registerWebviewViewProvider(
+      "CodeToolBox.chatGPTView",
+      webviewViewProvider,
+      {
+        webviewOptions: {
+          retainContextWhenHidden: true,
+        },
+      },
+    ),
+  );
+
+  context.subscriptions.push(
+    // 添加打开视图
+    commands.registerCommand("CodeToolBox.openChatGPTView", () => {
+      openChatGPTView();
     }),
 
-    // 关闭
+    // 添加关闭视图
     commands.registerCommand("CodeToolBox.hideChatGPTView", () => {
       commands
         .executeCommand("setContext", "CodeToolBox.chatGPTView", false)
         .then(() => {
           webviewViewProvider?.removeWebView();
         });
+    }),
+
+    // 添加解释这段文案
+    commands.registerCommand("CodeToolBox.explainByChatGPT", () => {
+      // 获取当前活动的文本编辑器
+      const editor = window.activeTextEditor;
+
+      if (editor) {
+        // 获取用户选中的文本
+        const selectedText = editor.document.getText(editor.selection);
+        if (!selectedText) {
+          window.showInformationMessage("没有选中的文本");
+          return;
+        }
+
+        // 获取本插件的设置
+        const config = workspace.getConfiguration("CodeToolBox");
+        const hostname = config.get("hostname");
+        const apiKey = config.get("apiKey");
+        if (!hostname) {
+          window.showInformationMessage(
+            "请先设置插件 CodeToolBox 的 hostname，点击左侧标签栏 CodeToolBox 的图标进行设置",
+          );
+          return;
+        }
+        if (!apiKey) {
+          window.showInformationMessage(
+            "请先设置插件 CodeToolBox 的 apiKey，点击左侧标签栏 CodeToolBox 的图标进行设置",
+          );
+          return;
+        }
+        // 打开左侧的 chatGPT 对话框,并传入问题
+        openChatGPTView(selectedText);
+      } else {
+        window.showInformationMessage("没有活动的文本编辑器");
+      }
     }),
   );
 };

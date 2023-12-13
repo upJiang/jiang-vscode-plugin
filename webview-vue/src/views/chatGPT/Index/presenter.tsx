@@ -1,26 +1,48 @@
+import { watch } from "vue";
+import { useRoute } from "vue-router";
+
 import { useModel } from "./model";
 import Service from "./service";
 
 export const usePresenter = () => {
   const model = useModel();
   const service = new Service(model);
+  const route = useRoute();
 
-  const sendMessage = () => {
-    if (model.userInput.value) {
-      model.messages.value.push({ text: model.userInput.value, type: "user" });
-      service.askQuestion();
-      model.userInput.value = "";
+  // 发送消息
+  const sendMessage = (content: string) => {
+    model.messageList.value.push({
+      content,
+      role: "user",
+      time: new Date().toLocaleString(),
+    });
+    service.askQuestion();
+    model.userInput.value = "";
+  };
 
-      // Simulate a response from the robot (replace with actual logic)
-      // setTimeout(() => {
-      //   const response = "This is a simulated response from the robot.";
-      //   model.messages.value.push({ text: response, type: "robot" });
-      // }, 500);
+  // 回车
+  const sendMessageEnter = () => {
+    if (model.userInput.value && model.canSubmit.value) {
+      sendMessage(model.userInput.value);
     }
   };
+
+  watch(
+    () => route.query?.selectedText,
+    () => {
+      if (route.query?.selectedText && model.canSubmit.value) {
+        sendMessage(`${route.query.selectedText}, 请帮我解释这段文案`);
+      }
+    },
+    {
+      immediate: true,
+    },
+  );
+
   return {
     model,
     service,
+    sendMessageEnter,
     sendMessage,
   };
 };

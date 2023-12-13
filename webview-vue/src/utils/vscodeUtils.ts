@@ -52,7 +52,7 @@ export const taskHandler: {
 } = {
   // 跳转路由
   route: (data: { path: string; query?: { [key: string]: string } }) => {
-    router.push({
+    router.replace({
       path: data.path,
       query: data.query,
     });
