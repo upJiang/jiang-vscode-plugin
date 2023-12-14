@@ -16,7 +16,9 @@ export default class Service {
         houseName: this.model.hostname,
         apiKey: this.model.apiKey,
         messages: this.model.messageList.value,
+        model: this.model.model,
       });
+
       if (res?.choices && res?.choices.length) {
         this.model.messageList.value.push({
           content: "",

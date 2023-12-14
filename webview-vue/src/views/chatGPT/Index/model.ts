@@ -7,6 +7,7 @@ export const useModel = () => {
   // 当前调用的域名
   const hostname = (useRoute().query.hostname as string) || "";
   const apiKey = (useRoute().query.apiKey as string) || "";
+  const model = (useRoute().query.model as string) || "";
 
   // 消息列表
   const messageList = ref<Message[]>([]);
@@ -27,6 +28,7 @@ export const useModel = () => {
     apiKey,
     loading,
     canSubmit,
+    model,
   };
 };
 

@@ -13,6 +13,7 @@ interface IFetchChatGPTQuestionResult {
 interface IFetchChatGPTQuestionParams {
   houseName: string;
   apiKey: string;
+  model: string;
   messages: Message[];
 }
 
@@ -27,7 +28,7 @@ export function fetchChatGPTQuestion(data: IFetchChatGPTQuestionParams) {
     url: `https://${data.houseName}/v1/chat/completions`,
     method: "POST",
     data: {
-      model: "gpt-3.5-turbo-0301",
+      model: data.model,
       messages: data.messages,
     },
     headers: {

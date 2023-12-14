@@ -60,7 +60,7 @@ const openChatGPTView = (selectedText?: string) => {
         const config = workspace.getConfiguration("CodeToolBox");
         const hostname = config.get("hostname");
         const apiKey = config.get("apiKey");
-
+        const model = config.get("model");
         setTimeout(() => {
           // 发送任务,并传递参数
           if (!webviewViewProvider || !webviewViewProvider?.webview) {
@@ -75,6 +75,7 @@ const openChatGPTView = (selectedText?: string) => {
                 hostname,
                 apiKey,
                 selectedText,
+                model,
               },
             },
           });

@@ -87,6 +87,7 @@ module.exports = {
     "max-lines": ["error", 1000], //限制行数 请勿修改 请优化你的代码
     complexity: ["error", 20], // 限制复杂度
     "require-await": "error",
+    "vue/no-v-html": "off", // 允许 v-html
   },
   globals: { defineOptions: "readonly" },
 };

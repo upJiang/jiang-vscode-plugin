@@ -7,9 +7,7 @@
         v-for="item in model.messageList.value"
         :key="item.content"
       >
-        <span>
-          {{ item.content }}
-        </span>
+        <CodeDisplay :answer="item.content" />
         <span class="time">{{ item.time }}</span>
       </div>
       <div class="loading-container" v-if="model.loading.value">
@@ -20,7 +18,7 @@
     </div>
     <div class="input-container">
       <a-input
-        v-model:value.trim="model.userInput.value"
+        v-model:value="model.userInput.value"
         class="user-input"
         placeholder="请输入您的问题"
         @keyup.enter="presenter.sendMessageEnter"
@@ -31,6 +29,7 @@
 <script lang="ts" setup>
 import { nextTick, ref, watch } from "vue";
 
+import CodeDisplay from "../components/CodeDisplay.vue";
 import { usePresenter } from "./presenter";
 
 const presenter = usePresenter();

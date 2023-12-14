@@ -10,8 +10,13 @@
     "clear": "vite clear"
   },
   "dependencies": {
+    "@kangc/v-md-editor": "^2.3.18",
     "ant-design-vue": "^4.0.7",
     "axios": "^0.21.1",
+    "highlightjs": "^9.16.2",
+    "markdown-it": "^14.0.0",
+    "markdown-it-code-copy": "^0.1.2",
+    "markdown-it-highlightjs": "^4.0.1",
     "vue": "^3.3.8",
     "vue-router": "^4.2.5"
   },

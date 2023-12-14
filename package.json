@@ -139,6 +139,11 @@
           "type": "string",
           "default": "",
           "description": "第三方代理提供的apiKey"
+        },
+        "CodeToolBox.model": {
+          "type": "string",
+          "default": "gpt-3.5-turbo",
+          "description": "chatGPT模型（默认：gpt-3.5-turbo）"
         }
       }
     }

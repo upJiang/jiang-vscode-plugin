@@ -20,7 +20,7 @@ export const usePresenter = () => {
     model.userInput.value = "";
   };
 
-  // 回车
+  // 回车发送
   const sendMessageEnter = () => {
     if (model.userInput.value && model.canSubmit.value) {
       sendMessage(model.userInput.value);
